@@ -6,44 +6,74 @@ import {
     Text,
     Alert,
   } from 'react-native';
+import SocketContext from '../socket-context'
 
-export default class ScoreBoard extends Component {
-  this.state = {
-
-  }
-
-  render() {
-    return (
-      // Try setting `justifyContent` to `center`.
-      // Try setting `flexDirection` to `row`.
+class User extends Component{
+  state = { 
+    "playerIds": [1,2,3],
+    "1": {      
+      "username": "rohandavidi",
+      "distance": "123.4",
+      "health": 100,
+      "averagespeed": 5.6,
+      "alive": true,
+      "rank": 3
+    },
+    "2": {
       
+    }
+}; // the state of the App component
+  
+  
+    render() {
+      return <View><Text>{this.state.username}</Text></View>
+    }
+}
+
+class ScoreBoard extends Component {
+    constructor(props) {
+        super(props)
+        this.state = { };
+    }
+
+
+    render() {
+    return(
     <View style={{
         flex: 1,
         marginTop: 25,
         marginHorizontal: 30,
     }}>
-        <View>
-            <Text style={styles.title}>Game Stats</Text>
-        </View>
-        <View
-  style={{
-    borderBottomColor: 'white',
-    borderBottomWidth: 15,
-  }}
-/>
-        <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={styles.distanceStats}>
-                <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Speed</Text>
+            <View>
+                <Text style={styles.title}>Game Stats</Text>
             </View>
+            <View
+            style={{
+            borderBottomColor: 'white',
+            borderBottomWidth: 15,
+            }}
+            />
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View style={styles.distanceStats}>
+                    <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Speed</Text>
+                </View>
 
-            <View style={styles.distanceStats}>
-                <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Dist</Text>
-            </View>    
+                <View style={styles.distanceStats}>
+                    <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Dist</Text>
+                </View>    
+            <User/>
         </View>
     </View>
     );
-  }
 }
+}
+
+const ScoreBoardWithSocket = (props) => (
+    <SocketContext.Consumer>
+      {socket => <ScoreBoard {...props} socket={socket} />}
+    </SocketContext.Consumer>
+  )
+
 const styles = StyleSheet.create({
     matchButton: {
         color: "#f194ff",
@@ -77,3 +107,5 @@ const styles = StyleSheet.create({
       borderBottomColor: '#737373',
     },
   });
+
+  export default ScoreBoardWithSocket

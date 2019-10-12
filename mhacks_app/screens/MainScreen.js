@@ -8,9 +8,9 @@ import {
     Alert,
   } from 'react-native';
 import { Button } from 'react-native-elements';
-import SocketIOClient from 'socket.io-client';
+import SocketContext from '../socket-context'
 
-export default class MainScreen extends Component {
+class MainScreen extends Component {
     constructor(props) {
         super(props)
         this.state = { button_state: "Find Match!",
@@ -18,24 +18,30 @@ export default class MainScreen extends Component {
                        username: '',
                        password: '',
                        saved_username: ''};
-        this.socket = SocketIOClient('http://35.1.194.39:3000/');
+        this.pressFindMatch = this.pressFindMatch.bind(this);
+        this.saveLogin = this.saveLogin.bind(this);
+        this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(this);
       }
 
-    pressFindMatch = () => {
+    pressFindMatch(username) {
+        console.log(username);
         this.setState({button_state: "Looking for match..."});
-        socket.emit('channel-name', 'Hello world!');
+        this.props.socket.emit('find-game-event', username);
+        // Should listening be handled here?
+        this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
     }
 
-    saveLogin = () => {
+    saveLogin() {
         this.setState({saved_username: this.state.username});
 
         //const { saved_username, password } = this.state;
         //Alert.alert('Credentials', `${saved_username} + ${password}`);
     }
-    
-    onSend(messages=[]) {
-        this.socket.emit('find-game-event', messages[0]);
-        this._storeMessages(messages);
+
+    // Game found handler
+    onReceivedGameConfirmation() {
+        Alert.alert('Game found!');
+        // Handle other info...
     }
     
   render() {
@@ -73,13 +79,19 @@ export default class MainScreen extends Component {
                 raised
                 type="solid"
                 title= {this.state.button_state}
-                onPress={this.pressFindMatch}
+                onPress={() => this.pressFindMatch(this.state.saved_username)}
             />
             </View>
         </SafeAreaView>
     );
   }
 }
+
+const MainScreenWithSocket = (props) => (
+  <SocketContext.Consumer>
+    {socket => <MainScreen {...props} socket={socket} />}
+  </SocketContext.Consumer>
+)
 
 const styles = StyleSheet.create({
     container: {
@@ -131,3 +143,5 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
   });
+
+export default MainScreenWithSocket

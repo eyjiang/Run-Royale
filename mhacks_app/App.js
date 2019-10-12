@@ -4,8 +4,12 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import SocketIOClient from 'socket.io-client';
+import SocketContext from './socket-context'
 
 import AppNavigator from './navigation/AppNavigator';
+
+const socket = SocketIOClient('http://35.1.194.39:3000/');
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -20,10 +24,12 @@ export default function App(props) {
     );
   } else {
     return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <AppNavigator />
-      </View>
+      <SocketContext.Provider value={socket}>
+        <View style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          <AppNavigator />
+        </View>
+      </SocketContext.Provider>
     );
   }
 }
