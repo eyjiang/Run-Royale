@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 const ROOM_SIZE = 2;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
-const HEALTH_DECAY_RATE = 1;
+const HEALTH_DECAY_RATE = .0002;
 
 var playerInfo = {}; // dictionary of socket/player id and in-game info
 
@@ -45,8 +45,8 @@ function initializePlayer(socketId, username) {
 function updateRoomStatus(roomKey) {
   let socketIds = rooms[roomKey];
   let gameData = {'playerIds': socketIds};
-  for (const socketId of socketIds) {
-    gameData[socketId] = playerInfo[socketId];
+  for (var i = 0; i < ROOM_SIZE; i++) {
+    gameData[socketIds[i]] = playerInfo[socketIds[i]];
   }
   let timeElapsed = (new Date().getTime() - lastRefreshed[roomKey])/1000; //sec
   // update ranks
@@ -55,8 +55,8 @@ function updateRoomStatus(roomKey) {
     distances.push(gameData[socketId].distance);
     gameData[socketId].rank = -1;
   }
-  distances.sort((a,b)=>a-b);
-  let maxDistance = distances[distances.length - 1];
+  distances.sort((a,b)=>b-a);
+  let maxDistance = distances[0];
   for (var i = 0; i < ROOM_SIZE; i++) {
     for (const socketId of gameData.playerIds) {
       if (gameData[socketId].rank == -1 && distances[i] == gameData[socketId].distance) {
@@ -68,7 +68,7 @@ function updateRoomStatus(roomKey) {
   // update average speeds
   for (const socketId of gameData.playerIds) {
     gameData[socketId].averagespeed =
-      gameData[socketId].distance / (new Date().getTime() - roomStartTime[roomKey]) / 1000;
+      gameData[socketId].distance / (new Date().getTime() - roomStartTime[roomKey]) * 1000;
   }
   // decrement health
   for (const socketId of gameData.playerIds) {
@@ -92,8 +92,6 @@ io.on('connection', function(socket){
     let roomKey = findRoom(socket.id);
     socket.join('Room'+roomKey);
     initializePlayer(socket.id, username);
-    console.log(JSON.stringify(rooms));
-    console.log(JSON.stringify(playerInfo));
     if (rooms[roomKey].length == ROOM_SIZE) {
       io.to('Room'+roomKey).emit('game-found-event');
       setTimeout(() => {
@@ -104,21 +102,32 @@ io.on('connection', function(socket){
     }
   });
 
+  //var numUpdates = 0;
   socket.on('update-status-event', (distance) => {
+    //numUpdates++;
+    //console.log(numUpdates);
+    //if (numUpdates <= 2) return;
+    console.log(socket.id+" walked " + distance);
     let socketId = socket.id;
     playerInfo[socketId].distance += distance;
     // get roomkey
     var roomKey;
     for (const roomKeyCandidate of Object.keys(socket.rooms)) {
       if (roomKeyCandidate != socketId) {
-        roomKey = roomKeyCandidate;
+        roomKey = roomKeyCandidate.substring(4,);
         break;
       }
     }
-    var data = updateRoomStatus(roomkey);
+    var data = updateRoomStatus(roomKey);
     // broadcast updated data to room
     io.to('Room'+roomKey).emit('room-data-event', data);
-    if (!data[socketId].alive) {
+    console.log(JSON.stringify(rooms));
+    console.log(JSON.stringify(playerInfo));
+    var numAlive = 0;
+    for (const socketId of data.playerIds) {
+      if (data[socketId].alive) numAlive++;
+    }
+    if (!data[socketId].alive || numAlive <= 1) {
       socket.emit('game-over-event', data[socketId].rank);
 
       if (data[socketId].rank == 1) {
@@ -134,8 +143,4 @@ io.on('connection', function(socket){
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
-  setInterval(() => {
-    console.log(JSON.stringify(rooms));
-    console.log(JSON.stringify(playerInfo));
-  }, 10000)
 });

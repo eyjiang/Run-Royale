@@ -24,7 +24,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription":
+        "This app requires location services to track distance run.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription":
+        "This app requires location services to track distance run.",
+        "NSLocationAlwaysUsageDescription":
+        "This app requires location services to track distance run."
+      }
     }
   }
 }
