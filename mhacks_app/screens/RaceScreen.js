@@ -9,24 +9,11 @@ import {
 import SocketContext from '../socket-context'
 
 class User extends Component{
-  state = { 
-    "playerIds": [1,2,3],
-    "1": {      
-      "username": "rohandavidi",
-      "distance": "123.4",
-      "health": 100,
-      "averagespeed": 5.6,
-      "alive": true,
-      "rank": 3
-    },
-    "2": {
-      
-    }
-}; // the state of the App component
+  state = {}; // the state of the App component
   
   
     render() {
-      return <View><Text>{this.state.username}</Text></View>
+      return <View><Text>{JSON.stringify(this.state)}</Text></View>
     }
 }
 
@@ -34,8 +21,12 @@ class ScoreBoard extends Component {
     constructor(props) {
         super(props)
         this.state = { };
+        //this.socket.on('', this.);
     }
 
+    componentDidMount() {
+      this.set
+    }
 
     render() {
     return(
