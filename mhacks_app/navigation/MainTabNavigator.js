@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 
 import MainScreen from '../screens/MainScreen';
 import RaceScreen from '../screens/RaceScreen';
+import LobbyScreen from '../screens/LobbyScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -51,8 +52,25 @@ LinksStack.navigationOptions = {
 
 LinksStack.path = '';
 
+const LobbyStack = createStackNavigator(
+  {
+    Lobby: LobbyScreen,
+  },
+  config
+);
+
+LobbyStack.navigationOptions = {
+  tabBarLabel: 'Lobby',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
+  ),
+};
+
+LobbyStack.path = '';
+
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
+  LobbyStack,
   LinksStack,
 });
 
