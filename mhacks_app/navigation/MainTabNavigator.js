@@ -6,6 +6,8 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import MainScreen from '../screens/MainScreen';
+import RaceScreen from '../screens/RaceScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -71,6 +73,8 @@ const tabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
+  MainScreen,
+  RaceScreen,
 });
 
 tabNavigator.path = '';
