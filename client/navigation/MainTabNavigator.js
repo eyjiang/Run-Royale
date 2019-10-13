@@ -1,61 +1,86 @@
-import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import React from "react";
+import { Platform } from "react-native";
+import {
+  createStackNavigator,
+  createBottomTabNavigator
+} from "react-navigation";
 
-import TabBarIcon from '../components/TabBarIcon';
+import TabBarIcon from "../components/TabBarIcon";
 
-import MainScreen from '../screens/MainScreen';
-import RaceScreen from '../screens/RaceScreen';
+import MainScreen from "../screens/MainScreen";
+import RaceScreen from "../screens/RaceScreen";
+import LoadingScreen from "../screens/LoadingScreen";
 
 const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
+  web: { headerMode: "screen" },
+  default: {}
 });
 
 const HomeStack = createStackNavigator(
   {
-    Home: MainScreen,
+    Home: MainScreen
   },
   config
 );
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Menu',
+  tabBarLabel: "Menu",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+        Platform.OS === "ios"
+          ? `ios-information-circle${focused ? "" : "-outline"}`
+          : "md-information-circle"
       }
     />
-  ),
+  )
 };
 
-HomeStack.path = '';
+HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
   {
-    Links: RaceScreen,
+    Links: RaceScreen
   },
   config
 );
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Race',
+  tabBarLabel: "Race",
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
-  ),
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === "ios" ? "ios-link" : "md-link"}
+    />
+  )
 };
 
-LinksStack.path = '';
+const LoadingStack = createStackNavigator(
+  {
+    Loading: LoadingScreen
+  },
+  config
+);
+
+LoadingStack.navigationOptions = {
+  tabBarLabel: "Loading",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === "ios" ? "ios-link" : "md-link"}
+    />
+  )
+};
+
+LoadingStack.path = "";
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  LoadingStack,
+  LinksStack
 });
 
-tabNavigator.path = '';
+tabNavigator.path = "";
 
 export default tabNavigator;

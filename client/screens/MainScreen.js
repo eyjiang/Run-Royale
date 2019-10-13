@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   StyleSheet,
   View,
@@ -23,15 +23,20 @@ class MainScreen extends Component {
     button_color: '#338EFF',
     button_num_joined: 0,
     button_room_size: 0};
+    
     this.pressFindMatch = this.pressFindMatch.bind(this);
     this.saveLogin = this.saveLogin.bind(this);
-    this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(this);
+    this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(
+      this
+    );
   }
 
   _getLocationPermission = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      Alert.alert('Run Royale needs location services to track run progress. Please change permissions in the Settings app.');
+    if (status !== "granted") {
+      Alert.alert(
+        "Run Royale needs location services to track run progress. Please change permissions in the Settings app."
+      );
     }
   };
 
@@ -63,8 +68,8 @@ class MainScreen extends Component {
 
   // Game found handler
   onReceivedGameConfirmation() {
-    Alert.alert('Game found!');
-    this.props.navigation.navigate('Links');
+    Alert.alert("Game found!");
+    this.props.navigation.navigate("Loading");
   }
 
   render() {
@@ -97,11 +102,11 @@ class MainScreen extends Component {
   }
 }
 
-const MainScreenWithSocket = (props) => (
+const MainScreenWithSocket = props => (
   <SocketContext.Consumer>
     {socket => <MainScreen {...props} socket={socket} />}
   </SocketContext.Consumer>
-)
+);
 
 const styles = StyleSheet.create({
     container: {
@@ -166,5 +171,4 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
   });
-
-export default MainScreenWithSocket
+export default MainScreenWithSocket;
