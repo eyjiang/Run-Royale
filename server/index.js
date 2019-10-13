@@ -6,6 +6,8 @@ const ROOM_SIZE = 4;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
 const HEALTH_DECAY_RATE = .0006;
+let blue_shell_modifier = 0.15;
+let room_status = 0;
 
 var playerInfo = {}; // dictionary of socket/player id and in-game info
 
@@ -105,7 +107,12 @@ io.on('connection', function(socket){
       }, 5000+2000);
     }
   });
-
+  // Listens for item usage
+  socket.on('use-item', () => {
+    let socketId = socket.id;
+    room_status = 1; //blueshell triggered
+    console.log("Used Item");
+  });
   //var numUpdates = 0;
   socket.on('update-status-event', (distance) => {
     //numUpdates++;
@@ -114,6 +121,15 @@ io.on('connection', function(socket){
     // console.log(socket.id+" walked " + distance);
     let socketId = socket.id;
     playerInfo[socketId].distance += distance;
+
+    if(playerInfo[socketId].rank == 1 && room_status == 1){
+      console.log(playerInfo[socketId].username, playerInfo[socketId].distance);
+      playerInfo[socketId].distance = playerInfo[socketId].distance *( 1- blue_shell_modifier);
+      playerInfo[socketId].health -= 50;
+      room_status = 0;
+      console.log(playerInfo[socketId].username, playerInfo[socketId].distance);
+    }
+
     // get roomkey
     var roomKey;
     for (const roomKeyCandidate of Object.keys(socket.rooms)) {
