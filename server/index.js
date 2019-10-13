@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 const ROOM_SIZE = 4;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
-const HEALTH_DECAY_RATE = .0002;
+const HEALTH_DECAY_RATE = .0006;
 
 var playerInfo = {}; // dictionary of socket/player id and in-game info
 
@@ -92,13 +92,17 @@ io.on('connection', function(socket){
     let roomKey = findRoom(socket.id);
     socket.join('Room'+roomKey);
     initializePlayer(socket.id, username);
+    // console.log(rooms[roomKey].length);
+    // console.log(ROOM_SIZE);
+    io.to('Room'+roomKey).emit('find-game-event', ({num_joined: rooms[roomKey].length,
+                                                     room_size: ROOM_SIZE}));
     if (rooms[roomKey].length == ROOM_SIZE) {
       io.to('Room'+roomKey).emit('game-found-event');
       setTimeout(() => {
         lastRefreshed[roomKey] = new Date().getTime();
         roomStartTime[roomKey] = new Date().getTime();
         io.to('Room'+roomKey).emit('game-started-event', updateRoomStatus(roomKey));
-      }, 5000);
+      }, 5000+2000);
     }
   });
 
@@ -107,7 +111,7 @@ io.on('connection', function(socket){
     //numUpdates++;
     //console.log(numUpdates);
     //if (numUpdates <= 2) return;
-    console.log(socket.id+" walked " + distance);
+    // console.log(socket.id+" walked " + distance);
     let socketId = socket.id;
     playerInfo[socketId].distance += distance;
     // get roomkey
@@ -121,15 +125,22 @@ io.on('connection', function(socket){
     var data = updateRoomStatus(roomKey);
     // broadcast updated data to room
     io.to('Room'+roomKey).emit('room-data-event', data);
-    console.log(JSON.stringify(rooms));
-    console.log(JSON.stringify(playerInfo));
+    // console.log(JSON.stringify(rooms));
+    // console.log(JSON.stringify(playerInfo));
     var numAlive = 0;
     for (const socketId of data.playerIds) {
       if (data[socketId].alive) numAlive++;
     }
     if (!data[socketId].alive || numAlive <= 1) {
-      socket.emit('game-over-event', data[socketId].rank);
-
+      console.log(data[socketId].username + ' just died');
+      for (const id of data.playerIds) {
+        if (!data[id].alive) {
+          io.to('Room'+roomKey).emit('game-over-event', id, data[id].rank, data[id].username, data[id].distance, data[id].averagespeed);
+          setTimeout(() => io.to('Room'+roomKey).emit('game-over-event', id, data[id].rank, data[id].username, data[id].distance, data[id].averagespeed), 2000);
+        }
+      }
+      io.to('Room'+roomKey).emit('game-over-event', socketId, data[socketId].rank, data[socketId].username, data[socketId].distance, data[socketId].averagespeed);
+      setTimeout(() => io.to('Room'+roomKey).emit('game-over-event', socketId, data[socketId].rank, data[socketId].username, data[socketId].distance, data[socketId].averagespeed), 2000);
       if (data[socketId].rank == 1) {
         delete rooms[roomKey];
         delete lastRefreshed[roomKey];

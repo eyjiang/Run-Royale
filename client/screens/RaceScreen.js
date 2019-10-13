@@ -75,9 +75,11 @@ class ScoreBoard extends Component {
         'distanceInterval': 10,
       };
       let locationUpdater = await Location.watchPositionAsync(options, this.updateStatus).catch((error) => console.log(error));
-      this.props.socket.on('game-over-event', (rank) => {
-        Alert.alert("Your rank was "+rank);
-        locationUpdater.remove(this.updateStatus);
+      this.props.socket.on('game-over-event', (socketId, rank, username, distance, avgspeed) => {
+        if (this.props.socket.id == socketId) {
+          locationUpdater.remove(this.updateStatus);
+          this.props.navigation.navigate("EndScreen");
+        }
       });
     });
     this.props.socket.on('room-data-event', (data) => {
