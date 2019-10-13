@@ -2,7 +2,7 @@ var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-const ROOM_SIZE = 2;
+const ROOM_SIZE = 4;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
 const HEALTH_DECAY_RATE = .0002;
@@ -97,7 +97,7 @@ io.on('connection', function(socket){
       setTimeout(() => {
         lastRefreshed[roomKey] = new Date().getTime();
         roomStartTime[roomKey] = new Date().getTime();
-        io.to('Room'+roomKey).emit('game-started-event');
+        io.to('Room'+roomKey).emit('game-started-event', updateRoomStatus(roomKey));
       }, 5000);
     }
   });

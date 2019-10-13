@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-      fontFamily: "Helvetica-Bold",
+      fontFamily: "Helvetica",
       color: 'blue',
       fontWeight: 'bold',
       fontSize: 30,
