@@ -10,7 +10,7 @@ import TabBarIcon from "../components/TabBarIcon";
 import MainScreen from "../screens/MainScreen";
 import RaceScreen from "../screens/RaceScreen";
 import LoadingScreen from "../screens/LoadingScreen";
-import EndScreen from '../screens/EndScreen';
+import EndScreen from "../screens/EndScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -19,7 +19,7 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: MainScreen
+    Home: { screen: MainScreen, navigationOptions: { tabBarVisible: false } }
   },
   config
 );
@@ -42,7 +42,7 @@ HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
   {
-    Links: RaceScreen
+    Links: { screen: RaceScreen, navigationOptions: { tabBarVisible: false } }
   },
   config
 );
@@ -59,7 +59,10 @@ LinksStack.navigationOptions = {
 
 const LoadingStack = createStackNavigator(
   {
-    Loading: LoadingScreen
+    Loading: {
+      screen: LoadingScreen,
+      navigationOptions: { tabBarVisible: false }
+    }
   },
   config
 );
@@ -77,13 +80,18 @@ LoadingStack.navigationOptions = {
 LoadingStack.path = "";
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack: { screen: HomeStack, navigationOptions:{tabBarVisible: false} },
-  LoadingStack: { screen: LoadingStack, navigationOptions:{tabBarVisible: false} },
-  LinksStack: { screen: LinksStack, navigationOptions:{tabBarVisible: false} },
-  EndScreen: { screen: EndScreen, navigationOptions:{tabBarVisible: false} }
+  HomeStack: { screen: HomeStack, navigationOptions: { tabBarVisible: false } },
+  LoadingStack: {
+    screen: LoadingStack,
+    navigationOptions: { tabBarVisible: false }
+  },
+  LinksStack: {
+    screen: LinksStack,
+    navigationOptions: { tabBarVisible: false }
+  },
+  EndScreen: { screen: EndScreen, navigationOptions: { tabBarVisible: false } }
 });
 
 tabNavigator.path = "";
-
 
 export default tabNavigator;
