@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import {
-  ImageBackground,
   StyleSheet,
   View,
-  SafeAreaView,
-  Text,
   Alert,
   Dimensions,
   Image,
@@ -18,11 +15,12 @@ import {
   Empty,
   Tombstone
 } from "../assets/images"; // <image source=Runner style=...>
-import { Race_Background } from "../assets/images";
 import SocketContext from "../socket-context";
 import * as Location from "expo-location";
-import layoutConstants from "../constants/Layout";
-const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
+
+const popUp = ({}) => {
+  let scaleValue = new Animated.Value(0);
+};
 
 class ScoreBoard extends Component {
   constructor(props) {
@@ -31,6 +29,8 @@ class ScoreBoard extends Component {
       screenwidth: Math.round(Dimensions.get("window").width),
       location: null,
       status: null,
+      used_item: false,
+      hit_notifier: null,
       data: null,
       //data: {"playerIds": ["Sr1hcqgXU-uTjLU0AAAB","pSXW3tdI2RlCAAAzAAAC",'3','4'],
       //'3': {"username":"justin","distance":250,"health":65,"averagespeed":85,"alive":true,"rank":2},
@@ -46,6 +46,10 @@ class ScoreBoard extends Component {
       orderedPlayerIds: null
       //hard coded^
     };
+    // Handler for client when someone was hit
+    this.props.socket.on("use-item", () => {
+      this.setState({ hit_notifier: "(user) was hit!" });
+    });
   }
 
   updateDisplayDistances() {
@@ -156,6 +160,11 @@ class ScoreBoard extends Component {
     this.setState({ location });
   };
 
+  useItem = () => {
+    this.setState({ used_item: true });
+    this.props.socket.emit("use-item");
+  };
+
   render() {
     if (this.state.data == null || this.state.orderedPlayerIds == null)
       return <View></View>;
@@ -175,10 +184,30 @@ class ScoreBoard extends Component {
     };
 
     return (
-      <ImageBackground
-        source={Race_Background}
-        style={{ width: "100%", height: "100%" }}
-      >
+      <View>
+        <View style={styles.container}>
+          <View>
+            <Button
+              containerStyle={{
+                padding: 45,
+                height: 45,
+                width: 45,
+                overflow: "hidden",
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                borderRadius: 15,
+                backgroundColor: "pink"
+              }}
+              disabledContainerStyle={{ backgroundColor: "grey" }}
+              onPress={() => this.useItem()}
+              //style={{fontSize: 20, color: 'green'}}
+            ></Button>
+            <View>
+              <Text style={styles.title}>{this.state.hit_notifier}</Text>
+            </View>
+          </View>
+        </View>
         <View>
           <View style={styles.columnContainer}>
             <View style={styles.rowContainer}>
@@ -291,7 +320,7 @@ class ScoreBoard extends Component {
             </View>
           </View>
         </View>
-      </ImageBackground>
+      </View>
     );
   }
 }
@@ -303,32 +332,21 @@ const ScoreBoardWithSocket = props => (
 );
 
 const styles = StyleSheet.create({
-  imgBackground: {
-    paddingTop: statusBarHeight,
-    width: "100%",
-    height: "100%",
-    position: "relative",
-    top: 0,
-    left: 0
-  },
   columnContainer: {
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "stretch",
-    //below is added
-    opacity: 0
+    alignItems: "stretch"
   },
   rowContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "stretch",
     borderTopWidth: 1,
-    // borderColor: "rgba(0,0,0,.2)",
-    opacity: 0
+    borderColor: "rgba(0,0,0,.2)"
   },
   textTestIcon: {
     flex: 1,
-    fontFamily: "KomikaAxis",
+    fontFamily: "Helvetica",
     color: "gray",
     fontSize: 15,
     textAlign: "center"
@@ -338,7 +356,7 @@ const styles = StyleSheet.create({
   },
   textTestRight: {
     flex: 1,
-    fontFamily: "KomikaAxis",
+    fontFamily: "Helvetica",
     color: "gray",
     fontSize: 15,
     textAlign: "right",
