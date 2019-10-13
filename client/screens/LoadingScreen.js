@@ -53,6 +53,7 @@ class LoadingScreen extends Component {
 
   startGame() {
     // Alert.alert("Open the Game!");
+    Vibration.vibrate(3000);
     this.props.navigation.navigate("Links");
     // this.props.navigation.navigate("EndScreen"); //works
   }

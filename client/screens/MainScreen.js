@@ -8,7 +8,8 @@ import {
   ImageBackground,
   Text,
   Alert,
-  Animated
+  Animated,
+  Vibration
 } from "react-native";
 import { Cloud_A, Cloud_B, Cloud_C } from "../assets/images";
 import { Button, ThemeProvider } from "react-native-elements";
@@ -55,7 +56,7 @@ class MainScreen extends Component {
       this.setState({
         button_room_size: room_data.room_size.toString(10)
       });
-      
+
       this.setState({
         button_state:
           "Joined: " +
@@ -179,7 +180,8 @@ class MainScreen extends Component {
 
   // Game found handler
   onReceivedGameConfirmation() {
-    Alert.alert("Game found!");
+    // Alert.alert("Game found!");
+    Vibration.vibrate(3000);
     this.props.navigation.navigate("Loading");
   }
 

@@ -122,6 +122,7 @@ class ScoreBoard extends Component {
         (socketId, rank, username, distance, avgspeed) => {
           if (this.props.socket.id == socketId) {
             locationUpdater.remove(this.updateStatus);
+            Vibration.vibrate(3000);
             this.props.navigation.navigate("EndScreen");
           }
         }
