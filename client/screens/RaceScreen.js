@@ -2,20 +2,30 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  SafeAreaView,
-  Text,
   Alert,
+  Text,
+  Animated,
+  Easing,
 } from 'react-native';
+import Button from 'react-native-button';
 import SocketContext from '../socket-context';
 import * as Location from 'expo-location';
+
+const popUp = ({}) => {let scaleValue = new Animated.Value(0)}
 
 class ScoreBoard extends Component {
   constructor(props) {
     super(props)
     this.state = {
       location: null,
-      status: null
+      status: null,
+      used_item: false,
+      hit_notifier: null,
     };
+    // Handler for client when someone was hit
+    this.props.socket.on('use-item', () => {
+      this.setState({hit_notifier: '(user) was hit!'});
+    });
   }
 
   componentDidMount() {
@@ -69,33 +79,51 @@ class ScoreBoard extends Component {
     this.setState({location});
   };
 
+  useItem = () => {
+    this.setState({used_item: true});
+    this.props.socket.emit('use-item');
+  }
+
   render() {
     return(
-      <View style={{
-        flex: 1,
-        marginTop: 25,
-        marginHorizontal: 30,
-      }}>
-      <View>
-      <Text style={styles.title}>Game Stats</Text>
+      <View style = {styles.container}>
+         <Button
+            containerStyle={{padding:45, height:45, width: 45, overflow:'hidden',
+            position:'absolute', bottom:0, left:0, borderRadius:15, backgroundColor: 'pink'}}
+            disabledContainerStyle={{backgroundColor: 'grey'}}
+            onPress={() => this.useItem()}
+            //style={{fontSize: 20, color: 'green'}}
+            >
+          </Button>
+          <View>
+            <Text style={styles.title}>{this.state.hit_notifier}</Text>
+          </View>
       </View>
-      <View
-      style={{
-        borderBottomColor: 'white',
-        borderBottomWidth: 15,
-      }}
-      />
-      <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-      <View style={styles.distanceStats}>
-      <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Speed</Text>
-      </View>
+      // <View style={{
+      //   flex: 1,
+      //   marginTop: 25,
+      //   marginHorizontal: 30,
+      // }}>
+      //   <View>
+      //     <Text style={styles.title}>Game Stats</Text>
+      //   </View>
+      //   <View
+      //     style={{
+      //       borderBottomColor: 'white',
+      //       borderBottomWidth: 15,
+      //     }}
+      //   />
+      //     <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+      //     <View style={styles.distanceStats}>
+      //     <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Speed</Text>
+      //     </View>
 
-      <View style={styles.distanceStats}>
-      <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Dist</Text>
-      </View>
-      </View>
-      <Text>{this.state.status}</Text>
-      </View>
+      //     <View style={styles.distanceStats}>
+      //     <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Dist</Text>
+      //     </View>
+      //     </View>
+      //     <Text>{this.state.status}</Text>
+      // </View>
     );
   }
 }
