@@ -6,7 +6,7 @@ const ROOM_SIZE = 4;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
 const HEALTH_DECAY_RATE = .0006;
-let blue_shell_modifier = 0.15;
+let blue_shell_modifier = 0.2;
 let room_status = 0;
 
 var playerInfo = {}; // dictionary of socket/player id and in-game info
@@ -119,25 +119,44 @@ io.on('connection', function(socket){
       }
     }
     let socketIds = rooms[roomKey];
-    for (var i = 0; i < ROOM_SIZE; i++) {
-      
-      playerInfo[socketIds[i]].health -= blue_shell_modifier*100;
-      
+    for (var i = 0; i < ROOM_SIZE; i++) { 
       if (playerInfo[socketIds[i]].rank == 1) {
-              console.log(playerInfo[socketIds[i]].username, playerInfo[socketIds[i]].distance);
-              
-      playerInfo[socketIds[i]].distance = playerInfo[socketIds[i]].distance *( 1- blue_shell_modifier);
-      
-      
+        io.to('Room'+roomKey).emit('blue-turtle-shell', socketId, socketIds[i]);
+              console.log(playerInfo[socketIds[i]].username, playerInfo[socketIds[i]].distance);              
+      //playerInfo[socketIds[i]].health -= blue_shell_modifier*100;
+      playerInfo[socketIds[i]].distance = playerInfo[socketIds[i]].distance *( 1- blue_shell_modifier);           
       console.log(playerInfo[socketIds[i]].username, playerInfo[socketIds[i]].distance);
       }
     }
     console.log("Used Item");
     
+    
     var data = updateRoomStatus(roomKey);
     // broadcast updated data to room
     io.to('Room'+roomKey).emit('room-data-event', data);
   });
+
+  socket.on('calibrate-zero', () => {
+    // get roomkey
+    let socketId = socket.id;
+    var roomKey;
+    for (const roomKeyCandidate of Object.keys(socket.rooms)) {
+      if (roomKeyCandidate != socketId) {
+        roomKey = roomKeyCandidate.substring(4,);
+        break;
+      }
+    }
+    let socketIds = rooms[roomKey];
+    for (var i = 0; i < ROOM_SIZE; i++) {             
+      playerInfo[socketIds[i]].health =100;
+      playerInfo[socketIds[i]].distance = 0;    
+    }
+    console.log("Calibrated to zero");
+    var data = updateRoomStatus(roomKey);
+    // broadcast updated data to room
+    io.to('Room'+roomKey).emit('room-data-event', data);
+  });
+  
   //var numUpdates = 0;
   socket.on('update-status-event', (distance) => {
     //numUpdates++;

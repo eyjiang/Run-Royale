@@ -20,6 +20,7 @@ import layoutConstants from "../constants/Layout";
 const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
 
 import colors from "../constants/Colors";
+import { stringify } from "query-string";
 const { white, black, supportGrey, dark_turquoise } = colors;
 
 let cloud_A_velo = 6 * 1000; // speed of cloud A
@@ -187,6 +188,16 @@ class UserRank extends Component {
           <View style={styles.winnerContainer}>
             <Text style={styles.winnername}>{this.state.username}</Text>
           </View>
+          <View style={styles.statsSpeed}>
+                        <View style={{width: 50, height: 50}}> 
+                            <Text>{Math.floor(this.state.distance/120)} m/s</Text>
+                        </View>
+                    </View>
+                    <View style={styles.statsDist}>
+                       <View style={{width: 50, height: 50}}> 
+                            <Text>{String((this.state.distance))} m</Text>
+                       </View>
+                    </View>         
           <Animated.Image
             style={{
               width: 200,
@@ -232,6 +243,16 @@ class UserRank extends Component {
             <Text style={styles.username}>{this.state.username}</Text>
             <Text style={styles.rank}>{this.state.rank}</Text>
           </View>
+          <View style={styles.statsSpeed}>
+                  <View style={{width: 50, height: 50}}> 
+                      <Text>{Math.floor(this.state.distance/120)} m/s</Text>
+                  </View>
+             </View>
+             <View style={styles.statsDist}>
+                  <View style={{width: 50, height: 50}}> 
+                      <Text>{Math.floor(this.state.distance+.001)} m</Text>
+                  </View>
+            </View>
           <Animated.Image
             style={{
               width: 200,
@@ -323,19 +344,24 @@ var styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
         marginHorizontal: 45,
-        marginVertical: -90,
-        transform: [{ rotate: '10deg'}],
+        marginVertical: -90+15,
+        transform: [{ 
+          rotate: '10deg'}],
         fontWeight: 'bold',
-        fontSize: 40
+        fontFamily: "KomikaAxis",
+        fontSize: 40,
+
     },
     statsDist:{
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
         marginHorizontal: 50,
-        marginVertical: 40,
-        transform: [{ rotate: '-10deg'}],
+        marginVertical: 40+15,
+        transform: [{ 
+          rotate: '-10deg'}],
         fontWeight: 'bold',
+        fontFamily: "KomikaAxis",
         fontSize: 40
     },
 });

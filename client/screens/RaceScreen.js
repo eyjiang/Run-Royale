@@ -18,7 +18,8 @@ import {
   Bronze,
   Empty,
   Tombstone,
-  Race_Background
+  Race_Background,
+  Blue_Shell
 } from "../assets/images"; // <image source=Runner style=...>
 import SocketContext from "../socket-context";
 import * as Location from "expo-location";
@@ -48,14 +49,26 @@ class ScoreBoard extends Component {
       p3displaydistance: new Animated.Value(0),
       p4displaydistance: new Animated.Value(0),
       // orderedPlayerIds: ['4','3',"pSXW3tdI2RlCAAAzAAAC", "Sr1hcqgXU-uTjLU0AAAB"],
-      orderedPlayerIds: null
+      orderedPlayerIds: null,
       //hard coded^
+      shell1distance: new Animated.Value(0),
+      shell2distance: new Animated.Value(0),
+      shell3distance: new Animated.Value(0),
+      shell4distance: new Animated.Value(0),
+      shell1opacity: new Animated.Value(0),
+      shell2opacity: new Animated.Value(0),
+      shell3opacity: new Animated.Value(0),
+      shell4opacity: new Animated.Value(0),
     };
+    this.state.p1displaydistance.addListener(({value}) => this._value = value);
+    this.state.p2displaydistance.addListener(({value}) => this._value = value);
+    this.state.p3displaydistance.addListener(({value}) => this._value = value);
+    this.state.p4displaydistance.addListener(({value}) => this._value = value);
     // Handler for client when someone was hit
     // TODO: Return name of player
-    this.props.socket.on("use-item", () => {
-      this.setState({ hit_notifier: "(user) was hit!" });
-    });
+    //this.props.socket.on("use-item", () => {
+    //  this.setState({ hit_notifier: "(user) was hit!" });
+    //});
   }
 
   updateDisplayDistances() {
@@ -101,6 +114,77 @@ class ScoreBoard extends Component {
   componentDidMount() {
     //setTimeout(() => this.updateDisplayDistances(), 3000);
     //this.updateDisplayDistances(); // remove once done
+    this.props.socket.on("blue-turtle-shell", (user, leader) => {
+      Vibration.vibrate(2000);
+      // release turtle shell animation
+      if (user == this.state.orderedPlayerIds[0]) {
+        this.state.shell1distance.setValue(this.state.p1displaydistance._value);
+        this.state.shell1opacity.setValue(1);
+        Animated.timing(this.state.shell1distance, {
+          toValue: this.state.screenwidth+20,
+          duration: 2000
+        }).start();
+      } else if (user == this.state.orderedPlayerIds[1]) {
+        this.state.shell2distance.setValue(this.state.p1displaydistance._value);
+        this.state.shell2opacity.setValue(1);
+        Animated.timing(this.state.shell2distance, {
+          toValue: this.state.screenwidth+20,
+          duration: 2000
+        }).start();
+      } else if (user == this.state.orderedPlayerIds[2]) {
+        this.state.shell3distance.setValue(this.state.p1displaydistance._value);
+        this.state.shell3opacity.setValue(1);
+        Animated.timing(this.state.shell3distance, {
+          toValue: this.state.screenwidth+20,
+          duration: 2000
+        }).start();
+      } else if (user == this.state.orderedPlayerIds[3]) {
+        this.state.shell4distance.setValue(this.state.p1displaydistance._value);
+        this.state.shell4opacity.setValue(1);
+        Animated.timing(this.state.shell4distance, {
+          toValue: this.state.screenwidth+20,
+          duration: 2000
+        }).start();
+      }
+      setTimeout(() => {
+        // hit leader animation
+        if (leader == this.state.orderedPlayerIds[0]) {
+          this.state.shell1distance.setValue(-20);
+          this.state.shell1opacity.setValue(1);
+          Animated.timing(this.state.shell1distance, {
+            toValue: this.state.p1displaydistance._value,
+            duration: 2000
+          }).start();
+        } else if (leader == this.state.orderedPlayerIds[1]) {
+          this.state.shell2distance.setValue(-20);
+          this.state.shell2opacity.setValue(1);
+          Animated.timing(this.state.shell2distance, {
+            toValue: this.state.p2displaydistance._value,
+            duration: 2000
+          }).start();
+        } else if (leader == this.state.orderedPlayerIds[2]) {
+          this.state.shell3distance.setValue(-20);
+          this.state.shell3opacity.setValue(1);
+          Animated.timing(this.state.shell3distance, {
+            toValue: this.state.p3displaydistance._value,
+            duration: 2000
+          }).start();
+        } else if (leader == this.state.orderedPlayerIds[3]) {
+          this.state.shell4distance.setValue(-20);
+          this.state.shell4opacity.setValue(1);
+          Animated.timing(this.state.shell4distance, {
+            toValue: this.state.p4displaydistance._value,
+            duration: 2000
+          }).start();
+        }
+        setTimeout(() => {
+          this.state.shell1opacity.setValue(0);
+          this.state.shell2opacity.setValue(0);
+          this.state.shell3opacity.setValue(0);
+          this.state.shell4opacity.setValue(0);
+        }, 3000);
+      }, 2000);
+    })
     this.props.socket.on("game-started-event", async data => {
       console.log(data);
       this.setState({ data });
@@ -136,6 +220,7 @@ class ScoreBoard extends Component {
       this.setState({ status });
       this.updateDisplayDistances();
     });
+    setTimeout(this.calibrations, 7000);
   }
 
   updateStatus = location => {
@@ -170,7 +255,12 @@ class ScoreBoard extends Component {
   useItem = () => {
     this.setState({ used_item: true });
     this.props.socket.emit("use-item");
-    Alert.alert("The lead player was just hit!");
+    //Alert.alert("The lead player was just hit!");
+  };
+    //'calibrate-zero'
+  calibrations = () => {
+    this.props.socket.emit("calibrate-zero");
+    // Alert.alert("Initial Values reset");
   };
 
   render() {
@@ -240,6 +330,18 @@ class ScoreBoard extends Component {
                     }}
                     source={this.state.data[p1id].alive ? Runner : Tombstone}
                   />
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      opacity: this.state.shell1opacity,
+                      transform: [
+                        {translateX: this.state.shell1distance},
+                        {perspective: 1000}
+                      ]
+                    }}
+                    source={Blue_Shell}
+                    />
                 </View>
                 <Text style={styles.textTestRight}>
                   {this.state.data[p1id].username +
@@ -267,6 +369,18 @@ class ScoreBoard extends Component {
                     }}
                     source={this.state.data[p2id].alive ? Runner : Tombstone}
                   />
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      opacity: this.state.shell2opacity,
+                      transform: [
+                        {translateX: this.state.shell2distance},
+                        {perspective: 1000}
+                      ]
+                    }}
+                    source={Blue_Shell}
+                    />
                 </View>
                 <Text style={styles.textTestRight}>
                   {this.state.data[p2id].username +
@@ -294,6 +408,18 @@ class ScoreBoard extends Component {
                     }}
                     source={this.state.data[p3id].alive ? Runner : Tombstone}
                   />
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      opacity: this.state.shell3opacity,
+                      transform: [
+                        {translateX: this.state.shell3distance},
+                        {perspective: 1000}
+                      ]
+                    }}
+                    source={Blue_Shell}
+                    />
                 </View>
                 <Text style={styles.textTestRight}>
                   {this.state.data[p3id].username +
@@ -321,6 +447,18 @@ class ScoreBoard extends Component {
                     }}
                     source={this.state.data[p4id].alive ? Runner : Tombstone}
                   />
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      opacity: this.state.shell4opacity,
+                      transform: [
+                        {translateX: this.state.shell4distance},
+                        {perspective: 1000}
+                      ]
+                    }}
+                    source={Blue_Shell}
+                    />
                 </View>
                 <Text style={styles.textTestRight}>
                   {this.state.data[p4id].username +

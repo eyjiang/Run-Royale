@@ -19,12 +19,12 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: { screen: MainScreen, navigationOptions: { tabBarVisible: false } }
+    Home: MainScreen
   },
   config
 );
 
-HomeStack.navigationOptions = {
+HomeStack.navigationOptions = {tabBarVisible: false,
   tabBarLabel: "Menu",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -42,12 +42,13 @@ HomeStack.path = "";
 
 const LinksStack = createStackNavigator(
   {
-    Links: { screen: RaceScreen, navigationOptions: { tabBarVisible: false } }
+    Links: RaceScreen
   },
   config
 );
 
 LinksStack.navigationOptions = {
+  tabBarVisible: false,
   tabBarLabel: "Race",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -59,15 +60,13 @@ LinksStack.navigationOptions = {
 
 const LoadingStack = createStackNavigator(
   {
-    Loading: {
-      screen: LoadingScreen,
-      navigationOptions: { tabBarVisible: false }
-    }
+    Loading: LoadingScreen
   },
   config
 );
 
 LoadingStack.navigationOptions = {
+  tabBarVisible: false,
   tabBarLabel: "Loading",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
