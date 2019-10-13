@@ -22,13 +22,22 @@ class MainScreen extends Component {
     password: '',
     button_color: '#338EFF',
     button_num_joined: 0,
-    button_room_size: 0};
+    button_room_size: 0,
+    button_disabled: false};
     
     this.pressFindMatch = this.pressFindMatch.bind(this);
     this.saveLogin = this.saveLogin.bind(this);
     this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(
       this
     );
+    this.props.socket.on('find-game-event', (room_data) => {this.setState({
+      button_num_joined: room_data.num_joined.toString(10)});
+      this.setState({
+      button_room_size: room_data.room_size.toString(10)});
+      this.setState({button_state: "Joined: " + this.state.button_num_joined + "/" + this.state.button_room_size});
+      console.log("button_num_joined: " + room_data.num_joined + " asdf: " + room_data.room_size);
+      });
+    this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
   }
 
   _getLocationPermission = async () => {
@@ -45,17 +54,11 @@ class MainScreen extends Component {
     this._getLocationPermission();
   }
 
-  pressFindMatch(username) {
+  pressFindMatch() {
     if (this.state.username != '') {
-      this.props.socket.emit('find-game-event', username);
-      this.props.socket.on('find-game-event', (room_data) => {this.setState({
-                                                              button_state: room_data.num_joined.toString(10)});
-                                                              this.setState({
-                                                              button_room_size: room_data.room_size.toString(10)})});
-                                                              
-      this.setState({button_state: "Joined: " + this.state.button_num_joined + "/" + this.state.button_room_size});
-      this.setState({button_color: "#1EA81C"})
-      this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
+      this.props.socket.emit('find-game-event', this.state.username);                                                     
+      this.setState({button_disabled: true});
+      this.setState({button_color: "#1EA81C"});
     }
   }
 
@@ -90,10 +93,13 @@ class MainScreen extends Component {
             <View style={styles.buttonContainer}>
                 <Button
                 raised
+                disabledStyle={{backgroundColor: this.state.button_color}}
+                disabledTitleStyle={{color: 'white'}}
+                disabled={this.state.button_disabled}
                 type="solid"
                 buttonStyle={{backgroundColor: this.state.button_color}}
                 title= {this.state.button_state}
-                onPress={() => this.pressFindMatch(this.state.username)}
+                onPress={() => this.pressFindMatch()}
             />
             </View>
         </SafeAreaView>

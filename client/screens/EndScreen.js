@@ -64,21 +64,17 @@ import {
             textAlign: 'center',
             color: 'black',
             fontWeight: 'bold',
-            font: 'Times New Roman'
-
         },
         winnername:{
             textAlign: 'center',
             color: 'black',
             fontWeight: 'bold',
-            font: 'Times New Roman',
             fontSize: 20
         },
         congrats:{
             textAlign: 'center',
             color: 'blue',
             fontWeight: 'bold',
-            font: 'Times New Roman'
 
         },
         rank:{
