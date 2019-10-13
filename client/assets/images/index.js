@@ -7,7 +7,7 @@ import Tombstone from "./tombstone.png";
 import Cloud_A from "./cloud2.png";
 import Cloud_B from "./cloud3.png";
 import Cloud_C from "./cloud4.png";
-import Race_Background from "./Race_Background.jpg";
+import Race_Background from "./race_background.png";
 
 export {
   Cloud_A,

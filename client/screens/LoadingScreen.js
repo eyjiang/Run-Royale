@@ -8,6 +8,7 @@ import {
   Text,
   Alert
 } from "react-native";
+import { Race_Background } from "../assets/images";
 import { Button } from "react-native-elements";
 import SocketContext from "../socket-context";
 import * as Permissions from "expo-permissions";
