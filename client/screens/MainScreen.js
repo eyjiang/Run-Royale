@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from "react";
 import {
+  Image,
   StyleSheet,
   View,
   SafeAreaView,
@@ -21,32 +22,17 @@ const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
 import colors from "../constants/Colors";
 const { white, black, supportGrey, dark_turquoise } = colors;
 
-const FadeInView = props => {
-  const [fadeAnim] = useState(new Animated.Value(0)); // Initial value for opacity: 0
-
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 10000
-    }).start();
-  }, []);
-
-  return (
-    <Animated.View // Special animatable View
-      style={{
-        ...props.style,
-        opacity: fadeAnim // Bind opacity to animated value
-      }}
-    >
-      {props.children}
-    </Animated.View>
-  );
-};
+let cloud_A_velo = 6 * 1000; // speed of cloud A
+let cloud_B_velo = 18 * 1000; // speed of cloud B
+let cloud_C_velo = 12 * 1000; // speed of cloud B
 
 class MainScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      A_Anim: new Animated.Value(-230), // Initial value for cloud_A movement: 0
+      B_Anim: new Animated.Value(-80), // Initial value for cloud_B movement: 0
+      C_Anim: new Animated.Value(-100), // Initial value for cloud_B movement: 0
       button_state: "Find Match!",
       count: 0,
       username: "",
@@ -98,6 +84,81 @@ class MainScreen extends Component {
   componentDidMount() {
     // ask for location services permission
     this._getLocationPermission();
+    Animated.sequence([
+      Animated.timing(this.state.B_Anim, {
+        toValue: 350,
+        duration: cloud_B_velo
+      }),
+      Animated.timing(this.state.B_Anim, {
+        toValue: -80,
+        duration: 1
+      })
+    ]).start();
+    Animated.sequence([
+      Animated.timing(this.state.C_Anim, {
+        toValue: 350,
+        duration: cloud_C_velo
+      }),
+      Animated.timing(this.state.C_Anim, {
+        toValue: -100,
+        duration: 1
+      })
+    ]).start();
+    Animated.sequence([
+      Animated.timing(this.state.A_Anim, {
+        toValue: 350,
+        duration: cloud_A_velo
+      }),
+      Animated.timing(this.state.A_Anim, {
+        toValue: -230,
+        duration: 1
+      })
+    ]).start();
+    setInterval(
+      //interval for cloud A
+      () =>
+        Animated.sequence([
+          Animated.timing(this.state.A_Anim, {
+            toValue: 350,
+            duration: cloud_A_velo
+          }),
+          Animated.timing(this.state.A_Anim, {
+            toValue: -230,
+            duration: 1
+          })
+        ]).start(), // start the sequence group
+      cloud_A_velo + 50
+    );
+    setInterval(
+      //interval for cloud B
+      () =>
+        Animated.sequence([
+          Animated.timing(this.state.B_Anim, {
+            toValue: 350,
+            duration: cloud_B_velo
+          }),
+          Animated.timing(this.state.B_Anim, {
+            toValue: -80,
+            duration: 1
+          })
+        ]).start(), // start the sequence group
+      cloud_B_velo + 50
+    );
+    setInterval(
+      //interval for cloud C
+      () =>
+        Animated.sequence([
+          Animated.timing(this.state.C_Anim, {
+            toValue: 350,
+            duration: cloud_C_velo
+          }),
+          Animated.timing(this.state.C_Anim, {
+            toValue: -100,
+            duration: 1
+          })
+        ]).start(), // start the sequence group
+      cloud_C_velo + 50
+    );
   }
 
   pressFindMatch() {
@@ -122,14 +183,48 @@ class MainScreen extends Component {
   }
 
   render() {
+    let { A_Anim } = this.state;
+    let { B_Anim } = this.state;
+    let { C_Anim } = this.state;
     return (
       <ImageBackground
         source={require("../assets/images/WinnerPage.png")}
         style={{ width: "100%", height: "100%" }}
       >
         <SafeAreaView style={styles.container}>
-          <FadeInView source={Cloud_A} style={{ width: 250, height: 50 }} />
-
+          <Animated.Image
+            style={{
+              width: 200,
+              height: 200,
+              resizeMode: "contain",
+              opacity: 1,
+              position: "absolute",
+              bottom: 0,
+              right: A_Anim
+            }}
+            source={Cloud_A}
+          />
+          <Animated.Image
+            style={{
+              width: 100,
+              height: 100,
+              resizeMode: "contain",
+              opacity: 1,
+              position: "absolute",
+              bottom: 90,
+              right: C_Anim
+            }}
+            source={Cloud_C}
+          />
+          <Animated.Image
+            style={{
+              opacity: 1,
+              position: "absolute",
+              left: B_Anim,
+              top: 30
+            }}
+            source={Cloud_B}
+          />
           <View style={styles.introTextContainer}>
             <Text style={styles.title}>Run Royale</Text>
           </View>
@@ -167,6 +262,21 @@ const MainScreenWithSocket = props => (
 );
 
 const styles = StyleSheet.create({
+  left_corner: {
+    opacity: 1,
+    position: "absolute",
+    left: 100, //-80 off screen, 290 right edge, 350 completely off
+    top: 30 //30 is top half of title
+  },
+  // right_corner: {
+  //   width: 200,
+  //   height: 200,
+  //   resizeMode: "contain",
+  //   opacity: 1,
+  //   position: "absolute",
+  //   right: 100,
+  //   bottom: 0
+  // },
   container: {
     flex: 1,
     marginTop: 5,
