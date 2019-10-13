@@ -347,10 +347,8 @@ const ScoreBoardWithSocket = props => (
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    width: "100%",
+    width: 100,
     height: 50,
-    justifyContent: "left",
-    alignItems: "left",
     position: "absolute",
     left: 10,
     bottom: 10
