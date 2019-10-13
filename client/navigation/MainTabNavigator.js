@@ -10,6 +10,7 @@ import TabBarIcon from "../components/TabBarIcon";
 import MainScreen from "../screens/MainScreen";
 import RaceScreen from "../screens/RaceScreen";
 import LoadingScreen from "../screens/LoadingScreen";
+import EndScreen from '../screens/EndScreen';
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -78,7 +79,8 @@ LoadingStack.path = "";
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
   LoadingStack,
-  LinksStack
+  LinksStack,
+  EndScreen,
 });
 
 tabNavigator.path = "";
