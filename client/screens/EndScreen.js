@@ -9,12 +9,26 @@ import {
   ImageBackground,
   Image
 } from "react-native";
+import SocketContext from '../socket-context';
 
 class UserRank extends Component {
   state = {
-    username: "rohandavidi",
-    rank: 3
+    username: "",
+    rank: "",
+    distance: "",
+    avgspeed: ""
   }; // the state of the App component
+
+  componentDidMount() {
+    this.props.socket.on('game-over-event', (socketId, rank, username, distance, avgspeed) => {
+      if (this.props.socket.id == socketId) {
+        this.setState({rank});
+        this.setState({username});
+        this.setState({distance});
+        this.setState({avgspeed});
+      }
+    });
+  }
 
   render() {
     if (this.state.rank == 1) {
@@ -44,11 +58,11 @@ class UserRank extends Component {
   }
 }
 
-export default class Background extends Component {
-  render() {
-    return <UserRank />;
-  }
-}
+const UserRankWithSocket = (props) => (
+  <SocketContext.Consumer>
+  {socket => <UserRank {...props} socket={socket} />}
+  </SocketContext.Consumer>
+)
 
 var styles = StyleSheet.create({
   userContainer: {
@@ -90,3 +104,9 @@ var styles = StyleSheet.create({
     fontWeight: "bold"
   }
 });
+
+export default class Background extends Component {
+  render() {
+    return <UserRankWithSocket/>;
+  }
+}
