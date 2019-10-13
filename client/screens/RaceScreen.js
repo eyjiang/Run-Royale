@@ -3,23 +3,17 @@ import {
   StyleSheet,
   View,
   Alert,
-<<<<<<< HEAD
+  Button,
   Text,
-  Animated,
-  Easing,
-} from 'react-native';
-import Button from 'react-native-button';
-=======
   Dimensions,
   Image,
   Animated
 } from 'react-native';
-import {Runner,Gold,Silver,Bronze,Empty, Tombstone} from '../assets/images'; // <image source=Runner style=...>
->>>>>>> 4b1e9a75763ad4a7d5bccc1fd5e33463785f2cfb
+import { Runner, Gold, Silver, Bronze, Empty, Tombstone } from '../assets/images'; // <image source=Runner style=...>
 import SocketContext from '../socket-context';
 import * as Location from 'expo-location';
 
-const popUp = ({}) => {let scaleValue = new Animated.Value(0)}
+const popUp = ({ }) => { let scaleValue = new Animated.Value(0) }
 
 class ScoreBoard extends Component {
   constructor(props) {
@@ -28,10 +22,8 @@ class ScoreBoard extends Component {
       screenwidth: Math.round(Dimensions.get('window').width),
       location: null,
       status: null,
-<<<<<<< HEAD
       used_item: false,
       hit_notifier: null,
-=======
       data: null,
       //data: {"playerIds": ["Sr1hcqgXU-uTjLU0AAAB","pSXW3tdI2RlCAAAzAAAC",'3','4'],
       //'3': {"username":"justin","distance":250,"health":65,"averagespeed":85,"alive":true,"rank":2},
@@ -46,11 +38,10 @@ class ScoreBoard extends Component {
       // orderedPlayerIds: ['4','3',"pSXW3tdI2RlCAAAzAAAC", "Sr1hcqgXU-uTjLU0AAAB"],
       orderedPlayerIds: null,
       //hard coded^
->>>>>>> 4b1e9a75763ad4a7d5bccc1fd5e33463785f2cfb
     };
     // Handler for client when someone was hit
     this.props.socket.on('use-item', () => {
-      this.setState({hit_notifier: '(user) was hit!'});
+      this.setState({ hit_notifier: '(user) was hit!' });
     });
   }
 
@@ -61,17 +52,17 @@ class ScoreBoard extends Component {
       let newDistance = this.state.data[playerId].distance
       maxDistance = newDistance > maxDistance ? newDistance : maxDistance;
     }
-    var maxWidth = this.state.screenwidth/2;
+    var maxWidth = this.state.screenwidth / 2;
     var cap = maxDistance < 200 ? 200 : maxDistance;
     let p1displaydistance = maxWidth * (this.state.data[this.state.orderedPlayerIds[0]].distance / cap);
     let p2displaydistance = maxWidth * (this.state.data[this.state.orderedPlayerIds[1]].distance / cap);
     let p3displaydistance = maxWidth * (this.state.data[this.state.orderedPlayerIds[2]].distance / cap);
     let p4displaydistance = maxWidth * (this.state.data[this.state.orderedPlayerIds[3]].distance / cap);
     // convert to animation later
-    Animated.timing(this.state.p1displaydistance, {toValue: p1displaydistance, duration: 2000}).start();
-    Animated.timing(this.state.p2displaydistance, {toValue: p2displaydistance, duration: 2000}).start();
-    Animated.timing(this.state.p3displaydistance, {toValue: p3displaydistance, duration: 2000}).start();
-    Animated.timing(this.state.p4displaydistance, {toValue: p4displaydistance, duration: 2000}).start();
+    Animated.timing(this.state.p1displaydistance, { toValue: p1displaydistance, duration: 2000 }).start();
+    Animated.timing(this.state.p2displaydistance, { toValue: p2displaydistance, duration: 2000 }).start();
+    Animated.timing(this.state.p3displaydistance, { toValue: p3displaydistance, duration: 2000 }).start();
+    Animated.timing(this.state.p4displaydistance, { toValue: p4displaydistance, duration: 2000 }).start();
   }
 
   componentDidMount() {
@@ -79,11 +70,11 @@ class ScoreBoard extends Component {
     //this.updateDisplayDistances(); // remove once done
     this.props.socket.on('game-started-event', async (data) => {
       console.log(data);
-      this.setState({data});
+      this.setState({ data });
       delete data['playerIds'];
       let orderedPlayerIds = Object.keys(data);
       console.log('setting orderedPlayerIds to' + orderedPlayerIds);
-      this.setState({orderedPlayerIds});
+      this.setState({ orderedPlayerIds });
       // set state orderedPlayerIds
       // start sending updates
       let options = {
@@ -101,8 +92,8 @@ class ScoreBoard extends Component {
     });
     this.props.socket.on('room-data-event', (data) => {
       let status = JSON.stringify(data);
-      this.setState({data});
-      this.setState({status});
+      this.setState({ data });
+      this.setState({ status });
       this.updateDisplayDistances();
     })
   }
@@ -117,15 +108,15 @@ class ScoreBoard extends Component {
     var lat2 = location.coords.latitude;
     var lon1 = this.state.location.coords.longitude;
     var lon2 = location.coords.longitude;
-    var φ1 = lat1*Math.PI/180;
-    var φ2 = lat2*Math.PI/180;
-    var Δφ = (lat2-lat1)*Math.PI/180;
-    var Δλ = (lon2-lon1)*Math.PI/180;
+    var φ1 = lat1 * Math.PI / 180;
+    var φ2 = lat2 * Math.PI / 180;
+    var Δφ = (lat2 - lat1) * Math.PI / 180;
+    var Δλ = (lon2 - lon1) * Math.PI / 180;
 
-    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-    Math.cos(φ1) * Math.cos(φ2) *
-    Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     var d = R * c;
     this.state.distance += d;
@@ -134,17 +125,17 @@ class ScoreBoard extends Component {
     this.props.socket.emit('update-status-event', d);
 
 
-    this.setState({location});
+    this.setState({ location });
   };
 
   useItem = () => {
-    this.setState({used_item: true});
+    this.setState({ used_item: true });
     this.props.socket.emit('use-item');
   }
 
   render() {
     if (this.state.data == null || this.state.orderedPlayerIds == null)
-    return(<View></View>);
+      return (<View></View>);
 
     let p1displaydistance = this.state.p1displaydistance;
     let p2displaydistance = this.state.p2displaydistance;
@@ -161,87 +152,64 @@ class ScoreBoard extends Component {
     }
 
 
-    return(
-<<<<<<< HEAD
-      <View style = {styles.container}>
-         <Button
-            containerStyle={{padding:45, height:45, width: 45, overflow:'hidden',
-            position:'absolute', bottom:0, left:0, borderRadius:15, backgroundColor: 'pink'}}
-            disabledContainerStyle={{backgroundColor: 'grey'}}
+    /* <View><Button
+            containerStyle={{
+              padding: 45, height: 45, width: 45, overflow: 'hidden',
+              position: 'absolute', bottom: 0, left: 0, borderRadius: 15, backgroundColor: 'pink'
+            }}
+            disabledContainerStyle={{ backgroundColor: 'grey' }}
             onPress={() => this.useItem()}
-            //style={{fontSize: 20, color: 'green'}}
-            >
-          </Button>
-          <View>
-            <Text style={styles.title}>{this.state.hit_notifier}</Text>
-          </View>
-      </View>
-      // <View style={{
-      //   flex: 1,
-      //   marginTop: 25,
-      //   marginHorizontal: 30,
-      // }}>
-      //   <View>
-      //     <Text style={styles.title}>Game Stats</Text>
-      //   </View>
-      //   <View
-      //     style={{
-      //       borderBottomColor: 'white',
-      //       borderBottomWidth: 15,
-      //     }}
-      //   />
-      //     <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
-      //     <View style={styles.distanceStats}>
-      //     <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Speed</Text>
-      //     </View>
+          //style={{fontSize: 20, color: 'green'}}
+          >
+          </Button> */
 
-      //     <View style={styles.distanceStats}>
-      //     <Text style = {{color: 'blue', fontWeight: 'bold', textAlign: 'center', fontSize: 13}}>Storm Dist</Text>
-      //     </View>
-      //     </View>
-      //     <Text>{this.state.status}</Text>
-      // </View>
-=======
+    return (
       <View>
-      <View style={styles.columnContainer}>
-      <View style={styles.rowContainer}>
-      <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p1id].rank)}/>
-      <View style={styles.middleAnimationBox}>
-      <Animated.Image style={{width: 50, height: 50, transform: [{translateX: this.state.p1displaydistance}, {perspective: 1000}]}} source={this.state.data[p1id].alive ? Runner : Tombstone}/>
-      </View>
-      <Text style={styles.textTestRight}>{this.state.data[p1id].username + '\n' + Math.round(this.state.data[p1id].distance) + ' m\n' + Math.floor(this.state.data[p1id].health) +'❤️'}</Text>
-      </View>
-      <View style={styles.rowContainer}>
-      <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p2id].rank)}/>
-      <View style={styles.middleAnimationBox}>
-      <Animated.Image style={{width: 50, height: 50, transform: [{translateX: this.state.p2displaydistance}, {perspective: 1000}]}} source={this.state.data[p2id].alive ? Runner : Tombstone}/>
-      </View>
-      <Text style={styles.textTestRight}>{this.state.data[p2id].username + '\n' + Math.round(this.state.data[p2id].distance) + ' m\n' + Math.floor(this.state.data[p2id].health) +'❤️'}</Text>
-      </View>
-      <View style={styles.rowContainer}>
-      <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p3id].rank)}/>
-      <View style={styles.middleAnimationBox}>
-      <Animated.Image style={{width: 50, height: 50, transform: [{translateX: this.state.p3displaydistance}, {perspective: 1000}]}} source={this.state.data[p3id].alive ? Runner : Tombstone}/>
-      </View>
-      <Text style={styles.textTestRight}>{this.state.data[p3id].username + '\n' + Math.round(this.state.data[p3id].distance) + ' m\n' + Math.floor(this.state.data[p3id].health) +'❤️'}</Text>
-      </View>
-      <View style={styles.rowContainer}>
-      <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p4id].rank)}/>
-      <View style={styles.middleAnimationBox}>
-      <Animated.Image style={{width: 50, height: 50, transform: [{translateX: this.state.p4displaydistance}, {perspective: 1000}]}} source={this.state.data[p4id].alive ? Runner : Tombstone}/>
-      </View>
-      <Text style={styles.textTestRight}>{this.state.data[p4id].username + '\n' + Math.round(this.state.data[p4id].distance) + ' m\n' + Math.floor(this.state.data[p4id].health) +'❤️'}</Text>
-      </View>
-      </View>
-      </View>
->>>>>>> 4b1e9a75763ad4a7d5bccc1fd5e33463785f2cfb
+        <View style={styles.container}>
+            <View>
+              <Text style={styles.title}>{this.state.hit_notifier}</Text>
+            </View>
+        </View>
+        <View>
+          <View style={styles.columnContainer}>
+            <View style={styles.rowContainer}>
+              <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p1id].rank)} />
+              <View style={styles.middleAnimationBox}>
+                <Animated.Image style={{ width: 50, height: 50, transform: [{ translateX: this.state.p1displaydistance }, { perspective: 1000 }] }} source={this.state.data[p1id].alive ? Runner : Tombstone} />
+              </View>
+              <Text style={styles.textTestRight}>{this.state.data[p1id].username + '\n' + Math.round(this.state.data[p1id].distance) + ' m\n' + Math.floor(this.state.data[p1id].health) + '❤️'}</Text>
+            </View>
+            <View style={styles.rowContainer}>
+              <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p2id].rank)} />
+              <View style={styles.middleAnimationBox}>
+                <Animated.Image style={{ width: 50, height: 50, transform: [{ translateX: this.state.p2displaydistance }, { perspective: 1000 }] }} source={this.state.data[p2id].alive ? Runner : Tombstone} />
+              </View>
+              <Text style={styles.textTestRight}>{this.state.data[p2id].username + '\n' + Math.round(this.state.data[p2id].distance) + ' m\n' + Math.floor(this.state.data[p2id].health) + '❤️'}</Text>
+            </View>
+            <View style={styles.rowContainer}>
+              <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p3id].rank)} />
+              <View style={styles.middleAnimationBox}>
+                <Animated.Image style={{ width: 50, height: 50, transform: [{ translateX: this.state.p3displaydistance }, { perspective: 1000 }] }} source={this.state.data[p3id].alive ? Runner : Tombstone} />
+              </View>
+              <Text style={styles.textTestRight}>{this.state.data[p3id].username + '\n' + Math.round(this.state.data[p3id].distance) + ' m\n' + Math.floor(this.state.data[p3id].health) + '❤️'}</Text>
+            </View>
+            <View style={styles.rowContainer}>
+              <Image style={styles.medalStyle} source={getSourceFromRank(this.state.data[p4id].rank)} />
+              <View style={styles.middleAnimationBox}>
+                <Animated.Image style={{ width: 50, height: 50, transform: [{ translateX: this.state.p4displaydistance }, { perspective: 1000 }] }} source={this.state.data[p4id].alive ? Runner : Tombstone} />
+              </View>
+              <Text style={styles.textTestRight}>{this.state.data[p4id].username + '\n' + Math.round(this.state.data[p4id].distance) + ' m\n' + Math.floor(this.state.data[p4id].health) + '❤️'}</Text>
+            </View>
+          </View>
+        </View>
+        </View>
     );
   }
 }
 
 const ScoreBoardWithSocket = (props) => (
   <SocketContext.Consumer>
-  {socket => <ScoreBoard {...props} socket={socket} />}
+    {socket => <ScoreBoard {...props} socket={socket} />}
   </SocketContext.Consumer>
 )
 
@@ -278,7 +246,7 @@ const styles = StyleSheet.create({
   medalStyle: {
     width: 30,
     height: 30,
-    transform: [{translateY: 10}, {perspective: 1000}]
+    transform: [{ translateY: 10 }, { perspective: 1000 }]
   }
 });
 

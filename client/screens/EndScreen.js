@@ -132,21 +132,18 @@ var styles = StyleSheet.create({
         textAlign: 'center',
         color: 'black',
         fontWeight: 'bold',
-        fontFamily: 'Times New Roman'
 
     },
     winnername:{
         textAlign: 'center',
         color: 'black',
         fontWeight: 'bold',
-        fontFamily: 'Times New Roman',
         fontSize: 20
     },
     congrats:{
         textAlign: 'center',
         color: 'blue',
         fontWeight: 'bold',
-        fontFamily: 'Times New Roman'
 
     },
     rank:{

@@ -55,6 +55,7 @@ class MainScreen extends Component {
       this.setState({
         button_room_size: room_data.room_size.toString(10)
       });
+      
       this.setState({
         button_state:
           "Joined: " +

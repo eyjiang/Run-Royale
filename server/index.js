@@ -92,8 +92,8 @@ io.on('connection', function(socket){
     let roomKey = findRoom(socket.id);
     socket.join('Room'+roomKey);
     initializePlayer(socket.id, username);
-    // console.log(rooms[roomKey].length);
-    // console.log(ROOM_SIZE);
+    console.log(rooms[roomKey].length);
+    console.log(ROOM_SIZE);
     io.to('Room'+roomKey).emit('find-game-event', ({num_joined: rooms[roomKey].length,
                                                      room_size: ROOM_SIZE}));
     if (rooms[roomKey].length == ROOM_SIZE) {

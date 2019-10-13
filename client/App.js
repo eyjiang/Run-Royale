@@ -9,7 +9,7 @@ import SocketContext from "./socket-context";
 
 import AppNavigator from "./navigation/AppNavigator";
 
-const socket = SocketIOClient('http://35.1.245.242:3000/');
+const socket = SocketIOClient('http://35.1.53.142:3000/');
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
