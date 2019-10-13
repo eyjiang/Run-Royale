@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  ImageBackground,
   StyleSheet,
   View,
   SafeAreaView,
@@ -50,8 +51,9 @@ class LoadingScreen extends Component {
   };
 
   startGame() {
-    Alert.alert("Open the Game!");
+    // Alert.alert("Open the Game!");
     this.props.navigation.navigate("Links");
+    // this.props.navigation.navigate("EndScreen"); //works
   }
 
   render() {
