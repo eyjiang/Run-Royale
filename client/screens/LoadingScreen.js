@@ -11,7 +11,11 @@ import { Button } from "react-native-elements";
 import SocketContext from "../socket-context";
 import * as Permissions from "expo-permissions";
 
-// const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
+import layoutConstants from "../constants/Layout";
+const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
+
+import colors from "../constants/Colors";
+const { white, black, supportGrey, dark_turquoise, sky_blue } = colors;
 
 class LoadingScreen extends Component {
   constructor(props) {
@@ -55,16 +59,7 @@ class LoadingScreen extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <View>
-          <View style={styles.username_display}>
-            <Text
-              style={{
-                fontSize: 32,
-                letterSpacing: 1
-              }}
-            >
-              {this.state.timer}
-            </Text>
-          </View>
+          <Text style={styles.title}>{this.state.timer}</Text>
         </View>
       </SafeAreaView>
     );
@@ -78,57 +73,19 @@ const LoadingScreenWithSocket = props => (
 );
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 5,
-    marginHorizontal: 16
-  },
-  username_display: {
-    textAlign: "center",
-    textAlignVertical: "center"
-  },
-  user_tag: {
-    color: "blue",
-    fontWeight: "bold",
-    fontSize: 30,
-    textAlign: "center",
-    justifyContent: "center"
-  },
   title: {
-    color: "blue",
+    fontSize: 320,
+    fontFamily: "KomikaAxis",
     fontWeight: "bold",
-    fontSize: 30,
-    textAlign: "center",
-    textDecorationLine: "underline"
+    color: dark_turquoise,
+    backgroundColor: white,
+    textAlign: "center"
   },
-  fixToText: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  buttonContainer: {
-    width: "100%",
-    height: 50,
+  container: {
+    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: 60
-  },
-  separator: {
-    marginVertical: 8,
-    borderBottomColor: "#737373"
-  },
-  signin_form: {
-    flex: 1,
-    justifyContent: "center",
-    width: "80%"
-  },
-  input: {
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "transparent",
-    marginBottom: 10
+    paddingTop: calcHeight(24)
   }
 });
 
