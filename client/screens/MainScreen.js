@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,8 +6,10 @@ import {
   TextInput,
   ImageBackground,
   Text,
-  Alert
+  Alert,
+  Animated
 } from "react-native";
+import { Cloud_A, Cloud_B, Cloud_C } from "../assets/images";
 import { Button, ThemeProvider } from "react-native-elements";
 import SocketContext from "../socket-context";
 import * as Permissions from "expo-permissions";
@@ -19,6 +21,28 @@ const { statusBarHeight, calcWidth, calcHeight } = layoutConstants;
 import colors from "../constants/Colors";
 const { white, black, supportGrey, dark_turquoise } = colors;
 
+const FadeInView = props => {
+  const [fadeAnim] = useState(new Animated.Value(0)); // Initial value for opacity: 0
+
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 10000
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View // Special animatable View
+      style={{
+        ...props.style,
+        opacity: fadeAnim // Bind opacity to animated value
+      }}
+    >
+      {props.children}
+    </Animated.View>
+  );
+};
+
 class MainScreen extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +53,8 @@ class MainScreen extends Component {
       password: "",
       button_color: dark_turquoise,
       button_num_joined: 0,
-      button_room_size: 0
+      button_room_size: 0,
+      button_disabled: false
     };
 
     this.pressFindMatch = this.pressFindMatch.bind(this);
@@ -37,6 +62,28 @@ class MainScreen extends Component {
     this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(
       this
     );
+    this.props.socket.on("find-game-event", room_data => {
+      this.setState({
+        button_num_joined: room_data.num_joined.toString(10)
+      });
+      this.setState({
+        button_room_size: room_data.room_size.toString(10)
+      });
+      this.setState({
+        button_state:
+          "Joined: " +
+          this.state.button_num_joined +
+          "/" +
+          this.state.button_room_size
+      });
+      console.log(
+        "button_num_joined: " +
+          room_data.num_joined +
+          " asdf: " +
+          room_data.room_size
+      );
+    });
+    this.props.socket.on("game-found-event", this.onReceivedGameConfirmation);
   }
 
   _getLocationPermission = async () => {
@@ -53,27 +100,11 @@ class MainScreen extends Component {
     this._getLocationPermission();
   }
 
-  pressFindMatch(username) {
+  pressFindMatch() {
     if (this.state.username != "") {
-      this.props.socket.emit("find-game-event", username);
-      this.props.socket.on("find-game-event", room_data => {
-        this.setState({
-          button_state: room_data.num_joined.toString(10)
-        });
-        this.setState({
-          button_room_size: room_data.room_size.toString(10)
-        });
-      });
-
-      this.setState({
-        button_state:
-          "Joined: " +
-          this.state.button_num_joined +
-          "/" +
-          this.state.button_room_size
-      });
+      this.props.socket.emit("find-game-event", this.state.username);
+      this.setState({ button_disabled: true });
       this.setState({ button_color: "#1EA81C" });
-      this.props.socket.on("game-found-event", this.onReceivedGameConfirmation);
     }
   }
 
@@ -97,6 +128,8 @@ class MainScreen extends Component {
         style={{ width: "100%", height: "100%" }}
       >
         <SafeAreaView style={styles.container}>
+          <FadeInView source={Cloud_A} style={{ width: 250, height: 50 }} />
+
           <View style={styles.introTextContainer}>
             <Text style={styles.title}>Run Royale</Text>
           </View>
@@ -111,10 +144,13 @@ class MainScreen extends Component {
           <View style={styles.buttonContainer}>
             <Button
               raised
+              disabledStyle={{ backgroundColor: this.state.button_color }}
+              disabledTitleStyle={{ color: "white" }}
+              disabled={this.state.button_disabled}
               type="solid"
               buttonStyle={{ backgroundColor: this.state.button_color }}
               title={this.state.button_state}
-              onPress={() => this.pressFindMatch(this.state.username)}
+              onPress={() => this.pressFindMatch()}
               fontFamily="KomikaAxis"
             />
           </View>
