@@ -362,7 +362,8 @@ const styles = StyleSheet.create({
     justifyContent: "left",
     alignItems: "left",
     position: "absolute",
-    bottom: 20
+    left: 10,
+    bottom: 10
   },
   columnContainer: {
     flexDirection: "column",
