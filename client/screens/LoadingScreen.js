@@ -3,6 +3,7 @@ import {
   ImageBackground,
   StyleSheet,
   View,
+  Vibration,
   SafeAreaView,
   TextInput,
   Text,

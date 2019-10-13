@@ -8,6 +8,7 @@ import {
   Text,
   Dimensions,
   Image,
+  Vibration,
   Animated
 } from "react-native";
 import {
