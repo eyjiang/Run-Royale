@@ -109,9 +109,34 @@ io.on('connection', function(socket){
   });
   // Listens for item usage
   socket.on('use-item', () => {
+    // get roomkey
     let socketId = socket.id;
-    room_status = 1; //blueshell triggered
+    var roomKey;
+    for (const roomKeyCandidate of Object.keys(socket.rooms)) {
+      if (roomKeyCandidate != socketId) {
+        roomKey = roomKeyCandidate.substring(4,);
+        break;
+      }
+    }
+    let socketIds = rooms[roomKey];
+    for (var i = 0; i < ROOM_SIZE; i++) {
+      
+      playerInfo[socketIds[i]].health -= blue_shell_modifier*100;
+      
+      if (playerInfo[socketIds[i]].rank == 1) {
+              console.log(playerInfo[socketIds[i]].username, playerInfo[socketIds[i]].distance);
+              
+      playerInfo[socketIds[i]].distance = playerInfo[socketIds[i]].distance *( 1- blue_shell_modifier);
+      
+      
+      console.log(playerInfo[socketIds[i]].username, playerInfo[socketIds[i]].distance);
+      }
+    }
     console.log("Used Item");
+    
+    var data = updateRoomStatus(roomKey);
+    // broadcast updated data to room
+    io.to('Room'+roomKey).emit('room-data-event', data);
   });
   //var numUpdates = 0;
   socket.on('update-status-event', (distance) => {
@@ -121,14 +146,6 @@ io.on('connection', function(socket){
     // console.log(socket.id+" walked " + distance);
     let socketId = socket.id;
     playerInfo[socketId].distance += distance;
-
-    if(playerInfo[socketId].rank == 1 && room_status == 1){
-      console.log(playerInfo[socketId].username, playerInfo[socketId].distance);
-      playerInfo[socketId].distance = playerInfo[socketId].distance *( 1- blue_shell_modifier);
-      playerInfo[socketId].health -= 50;
-      room_status = 0;
-      console.log(playerInfo[socketId].username, playerInfo[socketId].distance);
-    }
 
     // get roomkey
     var roomKey;

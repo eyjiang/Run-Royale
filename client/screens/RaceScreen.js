@@ -112,8 +112,8 @@ class ScoreBoard extends Component {
       // start sending updates
       let options = {
         accuracy: Location.Accuracy.Highest,
-        timeInterval: 50, //msec
-        distanceInterval: 10
+        timeInterval: 10, //msec
+        distanceInterval: 5 //m
       };
       let locationUpdater = await Location.watchPositionAsync(
         options,
@@ -193,17 +193,6 @@ class ScoreBoard extends Component {
       if (rank == 4) return Empty;
     };
 
-    /* <View><Button
-            containerStyle={{
-              padding: 45, height: 45, width: 45, overflow: 'hidden',
-              position: 'absolute', bottom: 0, left: 0, borderRadius: 15, backgroundColor: 'pink'
-            }}
-            disabledContainerStyle={{ backgroundColor: 'grey' }}
-            onPress={() => this.useItem()}
-          //style={{fontSize: 20, color: 'green'}}
-          >
-          </Button> */
-
     return (
       <ImageBackground
         source={Race_Background}
@@ -216,6 +205,7 @@ class ScoreBoard extends Component {
               position: 'absolute', bottom: 0, left: 0, borderRadius: 15, backgroundColor: 'pink'
             }}
             title="Use Item!"
+            disabled={this.state.used_item}
             disabledContainerStyle={{ backgroundColor: 'grey' }}
             onPress={() => this.useItem()}>
           </Button>
