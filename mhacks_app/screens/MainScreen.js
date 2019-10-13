@@ -55,7 +55,7 @@ class MainScreen extends Component {
     const hello_message = <Text style={styles.user_tag}>Hello, {this.state.saved_username}!</Text>
     return (
         <SafeAreaView style={styles.container}>
-          <ImageBackground source={...} style={{width: '100%', height: '100%'}}>
+          <ImageBackground source={'../../'} style={{width: '100%', height: '100%'}}>
             <View>
                 <Text style={styles.title}>Runner Royale</Text>
             </View>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
       textAlignVertical: 'center',
     },
     user_tag: {
-        fontFamily: "Helvetica",
+        fontFamily: "KomikaAxis",
         color: 'blue',
         fontWeight: 'bold',
         fontSize: 30,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-      fontFamily: "Helvetica-Bold",
+      fontFamily: "KomikaAxis-Bold",
       color: 'blue',
       fontWeight: 'bold',
       fontSize: 30,

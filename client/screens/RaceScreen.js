@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   textTestIcon: {
     flex: 1,
-    fontFamily: "Helvetica",
+    fontFamily: "KomikaAxis",
     color: "gray",
     fontSize: 15,
     textAlign: "center"
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   },
   textTestRight: {
     flex: 1,
-    fontFamily: "Helvetica",
+    fontFamily: "KomikaAxis",
     color: "gray",
     fontSize: 15,
     textAlign: "right",
