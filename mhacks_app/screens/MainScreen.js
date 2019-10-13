@@ -6,14 +6,18 @@ import {
     TextInput,
     Text,
     Alert,
+    ImageBackground,
   } from 'react-native';
 import { Button } from 'react-native-elements';
 import SocketContext from '../socket-context'
+import RaceScreen from './RaceScreen'
 
 class MainScreen extends Component {
     constructor(props) {
         super(props)
         this.state = { button_state: "Find Match!",
+                       login_button_state: "Login",
+                       login_button_disable: false,
                        count: 0,
                        username: '',
                        password: '',
@@ -25,30 +29,35 @@ class MainScreen extends Component {
 
     pressFindMatch(username) {
         console.log(username);
-        this.setState({button_state: "Looking for match..."});
-        this.props.socket.emit('find-game-event', username);
-        // Should listening be handled here?
-        this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
+        if (this.state.login_button_disable) {
+          this.setState({button_state: "Looking for match..."});
+          this.props.socket.emit('find-game-event', username);
+          this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
+        }
     }
 
     saveLogin() {
-        this.setState({saved_username: this.state.username});
-
-        //const { saved_username, password } = this.state;
-        //Alert.alert('Credentials', `${saved_username} + ${password}`);
+        if (this.state.username != '') {
+          this.setState({saved_username: this.state.username});
+          this.setState({login_button_state: "Logged in!"});
+          this.setState({login_button_disable: true});
+        }
     }
 
     // Game found handler
     onReceivedGameConfirmation() {
         Alert.alert('Game found!');
-        // Handle other info...
+        this.props.navigation.navigate('Links')
     }
     
   render() {
+    const login_message = <Text style={styles.user_tag}>Please login.</Text>
+    const hello_message = <Text style={styles.user_tag}>Hello, {this.state.saved_username}!</Text>
     return (
         <SafeAreaView style={styles.container}>
+          <ImageBackground source={...} style={{width: '100%', height: '100%'}}>
             <View>
-                <Text style={styles.title}>Run Royale</Text>
+                <Text style={styles.title}>Runner Royale</Text>
             </View>
             <View style={styles.container}>
                 <TextInput
@@ -57,22 +66,16 @@ class MainScreen extends Component {
                     placeholder={'Username'}
                     style={styles.input}
                 />
-                <TextInput
-                    value={this.state.password}
-                    onChangeText={(password) => this.setState({ password })}
-                    placeholder={'Password'}
-                    secureTextEntry={true}
-                    style={styles.input}
-                />
                 <Button
                     raised
+                    disabled={this.state.login_button_disable}
                     type="solid"
-                    title="Login"
+                    title={this.state.login_button_state}
                     onPress={this.saveLogin}
                 />
             </View>
-            <View>
-                <Text style={styles.user_tag}>Welcome {this.saved_username}!</Text>
+            <View style={styles.username_display}>
+                {this.state.saved_username == '' ? login_message : hello_message}
             </View>
             <View style={styles.buttonContainer}>
                 <Button
@@ -82,6 +85,7 @@ class MainScreen extends Component {
                 onPress={() => this.pressFindMatch(this.state.saved_username)}
             />
             </View>
+            </ImageBackground>
         </SafeAreaView>
     );
   }
@@ -99,7 +103,12 @@ const styles = StyleSheet.create({
       marginTop: 5,
       marginHorizontal: 16,
     },
+    username_display: {
+      textAlign: 'center',
+      textAlignVertical: 'center',
+    },
     user_tag: {
+        fontFamily: "Helvetica",
         color: 'blue',
         fontWeight: 'bold',
         fontSize: 30,
@@ -107,6 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
+      fontFamily: "Helvetica-Bold",
       color: 'blue',
       fontWeight: 'bold',
       fontSize: 30,
