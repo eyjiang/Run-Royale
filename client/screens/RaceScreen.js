@@ -170,9 +170,7 @@ class ScoreBoard extends Component {
   useItem = () => {
     this.setState({ used_item: true });
     this.props.socket.emit("use-item");
-    Alert.alert(
-      "The lead player was just hit!"
-    );
+    Alert.alert("The lead player was just hit!");
   };
 
   render() {
@@ -209,17 +207,24 @@ class ScoreBoard extends Component {
         source={Race_Background}
         style={{ width: "100%", height: "100%" }}
       >
-        <View>
+        <View style={styles.buttonContainer}>
           <Button
             containerStyle={{
-              padding: 45, height: 45, width: 45, overflow: 'hidden',
-              position: 'absolute', bottom: 0, left: 0, borderRadius: 15, backgroundColor: 'pink'
+              padding: 45,
+              height: 45,
+              width: 45,
+              overflow: "hidden",
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              borderRadius: 15,
+              backgroundColor: "pink"
             }}
             title="Use Item!"
-            disabledContainerStyle={{ backgroundColor: 'grey' }}
-            onPress={() => this.useItem()}>
-          </Button>
-          </View>
+            disabledContainerStyle={{ backgroundColor: "grey" }}
+            onPress={() => this.useItem()}
+          ></Button>
+        </View>
         <View>
           <View style={styles.container}>
             <View>
@@ -351,6 +356,14 @@ const ScoreBoardWithSocket = props => (
 );
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    width: "100%",
+    height: 50,
+    justifyContent: "left",
+    alignItems: "left",
+    position: "absolute",
+    bottom: 20
+  },
   columnContainer: {
     flexDirection: "column",
     justifyContent: "space-between",
