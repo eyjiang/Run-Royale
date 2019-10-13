@@ -2,7 +2,7 @@ var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-const ROOM_SIZE = 2;
+const ROOM_SIZE = 5;
 const START_HEALTH = 100;
 const MAX_ROOMS = 1000;
 const HEALTH_DECAY_RATE = .0002;
@@ -92,6 +92,10 @@ io.on('connection', function(socket){
     let roomKey = findRoom(socket.id);
     socket.join('Room'+roomKey);
     initializePlayer(socket.id, username);
+    console.log(rooms[roomKey].length);
+    console.log(ROOM_SIZE);
+    io.to('Room'+roomKey).emit('find-game-event', ({num_joined: rooms[roomKey].length,
+                                                     room_size: ROOM_SIZE}));
     if (rooms[roomKey].length == ROOM_SIZE) {
       io.to('Room'+roomKey).emit('game-found-event');
       setTimeout(() => {

@@ -4,10 +4,11 @@ import {
   View,
   SafeAreaView,
   TextInput,
+  ImageBackground,
   Text,
   Alert,
 } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, ThemeProvider } from 'react-native-elements';
 import SocketContext from '../socket-context';
 import * as Permissions from 'expo-permissions';
 import RaceScreen from './RaceScreen';
@@ -19,7 +20,9 @@ class MainScreen extends Component {
     count: 0,
     username: '',
     password: '',
-    saved_username: ''};
+    button_color: '#338EFF',
+    button_num_joined: 0,
+    button_room_size: 0};
     this.pressFindMatch = this.pressFindMatch.bind(this);
     this.saveLogin = this.saveLogin.bind(this);
     this.onReceivedGameConfirmation = this.onReceivedGameConfirmation.bind(this);
@@ -38,16 +41,21 @@ class MainScreen extends Component {
   }
 
   pressFindMatch(username) {
-    if (this.state.login_button_disable) {
-      this.setState({button_state: "Looking for match..."});
+    if (this.state.username != '') {
       this.props.socket.emit('find-game-event', username);
+      this.props.socket.on('find-game-event', (room_data) => {this.setState({
+                                                              button_state: room_data.num_joined.toString(10)});
+                                                              this.setState({
+                                                              button_room_size: room_data.room_size.toString(10)})});
+                                                              
+      this.setState({button_state: "Joined: " + this.state.button_num_joined + "/" + this.state.button_room_size});
+      this.setState({button_color: "#1EA81C"})
       this.props.socket.on('game-found-event', this.onReceivedGameConfirmation);
     }
   }
 
   saveLogin() {
     if (this.state.username != '') {
-      this.setState({saved_username: this.state.username});
       this.setState({login_button_state: "Logged in!"});
       this.setState({login_button_disable: true});
     }
@@ -60,47 +68,31 @@ class MainScreen extends Component {
   }
 
   render() {
-    const login_message = <Text style={styles.user_tag}>Please login.</Text>
-    const hello_message = <Text style={styles.user_tag}>Hello, {this.state.saved_username}!</Text>
     return (
+      <ImageBackground source={require('../assets/images/WinnerPage.png')} style={{width: '100%', height: '100%'}}>
         <SafeAreaView style={styles.container}>
             <View>
                 <Text style={styles.title}>Run Royale</Text>
             </View>
-            <View style={styles.container}>
+            <View style={styles.inputContainer}>
                 <TextInput
                     value={this.state.username}
                     onChangeText={(username) => this.setState({ username })}
-                    placeholder={'Username'}
+                    placeholder={'Input Username'}
                     style={styles.input}
                 />
-                <TextInput
-                    value={this.state.password}
-                    onChangeText={(password) => this.setState({ password })}
-                    placeholder={'Password'}
-                    secureTextEntry={true}
-                    style={styles.input}
-                />
-                <Button
-                    raised
-                    disabled={this.state.login_button_disable}
-                    type="solid"
-                    title={this.state.login_button_state}
-                    onPress={this.saveLogin}
-                />
-            </View>
-            <View style={styles.username_display}>
-                {this.state.saved_username == '' ? login_message : hello_message}
             </View>
             <View style={styles.buttonContainer}>
                 <Button
                 raised
                 type="solid"
+                buttonStyle={{backgroundColor: this.state.button_color}}
                 title= {this.state.button_state}
-                onPress={() => this.pressFindMatch(this.state.saved_username)}
+                onPress={() => this.pressFindMatch(this.state.username)}
             />
             </View>
         </SafeAreaView>
+        </ImageBackground>
     );
   }
 }
@@ -122,7 +114,6 @@ const styles = StyleSheet.create({
       textAlignVertical: 'center',
     },
     user_tag: {
-        fontFamily: "Helvetica",
         color: 'blue',
         fontWeight: 'bold',
         fontSize: 30,
@@ -130,7 +121,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-      fontFamily: "Helvetica-Bold",
       color: 'blue',
       fontWeight: 'bold',
       fontSize: 30,
@@ -149,6 +139,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 60
     },
+    inputContainer: {
+      width: '100%',
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',
+      top: 100
+  },
     separator: {
       marginVertical: 8,
       borderBottomColor: '#737373',
@@ -165,6 +163,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'transparent',
         marginBottom: 10,
+        alignSelf: 'center',
     },
   });
 
