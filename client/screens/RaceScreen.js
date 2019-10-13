@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  ImageBackground,
   StyleSheet,
   View,
   Alert,
@@ -15,7 +16,8 @@ import {
   Silver,
   Bronze,
   Empty,
-  Tombstone
+  Tombstone,
+  Race_Background
 } from "../assets/images"; // <image source=Runner style=...>
 import SocketContext from "../socket-context";
 import * as Location from "expo-location";
@@ -197,125 +199,130 @@ class ScoreBoard extends Component {
           </Button> */
 
     return (
-      <View>
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.title}>{this.state.hit_notifier}</Text>
-          </View>
-        </View>
+      <ImageBackground
+        source={Race_Background}
+        style={{ width: "100%", height: "100%" }}
+      >
         <View>
-          <View style={styles.columnContainer}>
-            <View style={styles.rowContainer}>
-              <Image
-                style={styles.medalStyle}
-                source={getSourceFromRank(this.state.data[p1id].rank)}
-              />
-              <View style={styles.middleAnimationBox}>
-                <Animated.Image
-                  style={{
-                    width: 50,
-                    height: 50,
-                    transform: [
-                      { translateX: this.state.p1displaydistance },
-                      { perspective: 1000 }
-                    ]
-                  }}
-                  source={this.state.data[p1id].alive ? Runner : Tombstone}
-                />
-              </View>
-              <Text style={styles.textTestRight}>
-                {this.state.data[p1id].username +
-                  "\n" +
-                  Math.round(this.state.data[p1id].distance) +
-                  " m\n" +
-                  Math.floor(this.state.data[p1id].health) +
-                  "❤️"}
-              </Text>
+          <View style={styles.container}>
+            <View>
+              <Text style={styles.title}>{this.state.hit_notifier}</Text>
             </View>
-            <View style={styles.rowContainer}>
-              <Image
-                style={styles.medalStyle}
-                source={getSourceFromRank(this.state.data[p2id].rank)}
-              />
-              <View style={styles.middleAnimationBox}>
-                <Animated.Image
-                  style={{
-                    width: 50,
-                    height: 50,
-                    transform: [
-                      { translateX: this.state.p2displaydistance },
-                      { perspective: 1000 }
-                    ]
-                  }}
-                  source={this.state.data[p2id].alive ? Runner : Tombstone}
+          </View>
+          <View>
+            <View style={styles.columnContainer}>
+              <View style={styles.rowContainer}>
+                <Image
+                  style={styles.medalStyle}
+                  source={getSourceFromRank(this.state.data[p1id].rank)}
                 />
+                <View style={styles.middleAnimationBox}>
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      transform: [
+                        { translateX: this.state.p1displaydistance },
+                        { perspective: 1000 }
+                      ]
+                    }}
+                    source={this.state.data[p1id].alive ? Runner : Tombstone}
+                  />
+                </View>
+                <Text style={styles.textTestRight}>
+                  {this.state.data[p1id].username +
+                    "\n" +
+                    Math.round(this.state.data[p1id].distance) +
+                    " m\n" +
+                    Math.floor(this.state.data[p1id].health) +
+                    "❤️"}
+                </Text>
               </View>
-              <Text style={styles.textTestRight}>
-                {this.state.data[p2id].username +
-                  "\n" +
-                  Math.round(this.state.data[p2id].distance) +
-                  " m\n" +
-                  Math.floor(this.state.data[p2id].health) +
-                  "❤️"}
-              </Text>
-            </View>
-            <View style={styles.rowContainer}>
-              <Image
-                style={styles.medalStyle}
-                source={getSourceFromRank(this.state.data[p3id].rank)}
-              />
-              <View style={styles.middleAnimationBox}>
-                <Animated.Image
-                  style={{
-                    width: 50,
-                    height: 50,
-                    transform: [
-                      { translateX: this.state.p3displaydistance },
-                      { perspective: 1000 }
-                    ]
-                  }}
-                  source={this.state.data[p3id].alive ? Runner : Tombstone}
+              <View style={styles.rowContainer}>
+                <Image
+                  style={styles.medalStyle}
+                  source={getSourceFromRank(this.state.data[p2id].rank)}
                 />
+                <View style={styles.middleAnimationBox}>
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      transform: [
+                        { translateX: this.state.p2displaydistance },
+                        { perspective: 1000 }
+                      ]
+                    }}
+                    source={this.state.data[p2id].alive ? Runner : Tombstone}
+                  />
+                </View>
+                <Text style={styles.textTestRight}>
+                  {this.state.data[p2id].username +
+                    "\n" +
+                    Math.round(this.state.data[p2id].distance) +
+                    " m\n" +
+                    Math.floor(this.state.data[p2id].health) +
+                    "❤️"}
+                </Text>
               </View>
-              <Text style={styles.textTestRight}>
-                {this.state.data[p3id].username +
-                  "\n" +
-                  Math.round(this.state.data[p3id].distance) +
-                  " m\n" +
-                  Math.floor(this.state.data[p3id].health) +
-                  "❤️"}
-              </Text>
-            </View>
-            <View style={styles.rowContainer}>
-              <Image
-                style={styles.medalStyle}
-                source={getSourceFromRank(this.state.data[p4id].rank)}
-              />
-              <View style={styles.middleAnimationBox}>
-                <Animated.Image
-                  style={{
-                    width: 50,
-                    height: 50,
-                    transform: [
-                      { translateX: this.state.p4displaydistance },
-                      { perspective: 1000 }
-                    ]
-                  }}
-                  source={this.state.data[p4id].alive ? Runner : Tombstone}
+              <View style={styles.rowContainer}>
+                <Image
+                  style={styles.medalStyle}
+                  source={getSourceFromRank(this.state.data[p3id].rank)}
                 />
+                <View style={styles.middleAnimationBox}>
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      transform: [
+                        { translateX: this.state.p3displaydistance },
+                        { perspective: 1000 }
+                      ]
+                    }}
+                    source={this.state.data[p3id].alive ? Runner : Tombstone}
+                  />
+                </View>
+                <Text style={styles.textTestRight}>
+                  {this.state.data[p3id].username +
+                    "\n" +
+                    Math.round(this.state.data[p3id].distance) +
+                    " m\n" +
+                    Math.floor(this.state.data[p3id].health) +
+                    "❤️"}
+                </Text>
               </View>
-              <Text style={styles.textTestRight}>
-                {this.state.data[p4id].username +
-                  "\n" +
-                  Math.round(this.state.data[p4id].distance) +
-                  " m\n" +
-                  Math.floor(this.state.data[p4id].health) +
-                  "❤️"}
-              </Text>
+              <View style={styles.rowContainer}>
+                <Image
+                  style={styles.medalStyle}
+                  source={getSourceFromRank(this.state.data[p4id].rank)}
+                />
+                <View style={styles.middleAnimationBox}>
+                  <Animated.Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      transform: [
+                        { translateX: this.state.p4displaydistance },
+                        { perspective: 1000 }
+                      ]
+                    }}
+                    source={this.state.data[p4id].alive ? Runner : Tombstone}
+                  />
+                </View>
+                <Text style={styles.textTestRight}>
+                  {this.state.data[p4id].username +
+                    "\n" +
+                    Math.round(this.state.data[p4id].distance) +
+                    " m\n" +
+                    Math.floor(this.state.data[p4id].health) +
+                    "❤️"}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 }
