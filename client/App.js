@@ -9,7 +9,7 @@ import SocketContext from "./socket-context";
 
 import AppNavigator from "./navigation/AppNavigator";
 
-const socket = SocketIOClient("http://35.1.245.242:3000/");
+const socket = SocketIOClient('http://35.1.245.242:3000/');
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -45,7 +45,26 @@ async function loadResourcesAsync() {
       ...Ionicons.font,
       // We include SpaceMono because we use it in HomeScreen.js. Feel free to
       // remove this if you are not using it in your app
-      "space-mono": require("./assets/fonts/SpaceMono-Regular.ttf")
+      KomikaAxis: require("./assets/fonts/KomikaAxis.ttf"),
+      "space-mono": require("./assets/fonts/SpaceMono-Regular.ttf"),
+      "sf-black": require("./assets/fonts/SF-Pro-Display-Black.otf"),
+      "sf-blackitalic": require("./assets/fonts/SF-Pro-Display-BlackItalic.otf"),
+      "sf-bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
+      "sf-bolditalic": require("./assets/fonts/SF-Pro-Display-BoldItalic.otf"),
+      "sf-heavy": require("./assets/fonts/SF-Pro-Display-Heavy.otf"),
+      "sf-heavyitalic": require("./assets/fonts/SF-Pro-Display-HeavyItalic.otf"),
+      "sf-light": require("./assets/fonts/SF-Pro-Display-Light.otf"),
+      "sf-lightitalic": require("./assets/fonts/SF-Pro-Display-LightItalic.otf"),
+      "sf-medium": require("./assets/fonts/SF-Pro-Display-Medium.otf"),
+      "sf-mediumitalic": require("./assets/fonts/SF-Pro-Display-MediumItalic.otf"),
+      "sf-regular": require("./assets/fonts/SF-Pro-Display-Regular.otf"),
+      "sf-regularitalic": require("./assets/fonts/SF-Pro-Display-RegularItalic.otf"),
+      "sf-semibold": require("./assets/fonts/SF-Pro-Display-Semibold.otf"),
+      "sf-semibolditalic": require("./assets/fonts/SF-Pro-Display-SemiboldItalic.otf"),
+      "sf-thin": require("./assets/fonts/SF-Pro-Display-Thin.otf"),
+      "sf-thinitalic": require("./assets/fonts/SF-Pro-Display-ThinItalic.otf"),
+      "sf-ultralight": require("./assets/fonts/SF-Pro-Display-Ultralight.otf"),
+      "sf-ultralightitalic": require("./assets/fonts/SF-Pro-Display-UltralightItalic.otf")
     })
   ]);
 }
