@@ -3,6 +3,8 @@ import {
   StyleSheet,
   View,
   Alert,
+  Button,
+  Text,
   Dimensions,
   Image,
   Animated
@@ -183,29 +185,22 @@ class ScoreBoard extends Component {
       if (rank == 4) return Empty;
     };
 
+    /* <View><Button
+            containerStyle={{
+              padding: 45, height: 45, width: 45, overflow: 'hidden',
+              position: 'absolute', bottom: 0, left: 0, borderRadius: 15, backgroundColor: 'pink'
+            }}
+            disabledContainerStyle={{ backgroundColor: 'grey' }}
+            onPress={() => this.useItem()}
+          //style={{fontSize: 20, color: 'green'}}
+          >
+          </Button> */
+
     return (
       <View>
         <View style={styles.container}>
           <View>
-            <Button
-              containerStyle={{
-                padding: 45,
-                height: 45,
-                width: 45,
-                overflow: "hidden",
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                borderRadius: 15,
-                backgroundColor: "pink"
-              }}
-              disabledContainerStyle={{ backgroundColor: "grey" }}
-              onPress={() => this.useItem()}
-              //style={{fontSize: 20, color: 'green'}}
-            ></Button>
-            <View>
-              <Text style={styles.title}>{this.state.hit_notifier}</Text>
-            </View>
+            <Text style={styles.title}>{this.state.hit_notifier}</Text>
           </View>
         </View>
         <View>
