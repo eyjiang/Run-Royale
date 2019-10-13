@@ -77,12 +77,13 @@ LoadingStack.navigationOptions = {
 LoadingStack.path = "";
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
-  LoadingStack,
-  LinksStack,
-  EndScreen,
+  HomeStack: { screen: HomeStack, navigationOptions:{tabBarVisible: false} },
+  LoadingStack: { screen: LoadingStack, navigationOptions:{tabBarVisible: false} },
+  LinksStack: { screen: LinksStack, navigationOptions:{tabBarVisible: false} },
+  EndScreen: { screen: EndScreen, navigationOptions:{tabBarVisible: false} }
 });
 
 tabNavigator.path = "";
+
 
 export default tabNavigator;
